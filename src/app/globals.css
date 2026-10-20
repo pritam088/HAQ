@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+/* ============================================================
+   HAQ — Design System
+   Color palette, typography, spacing, and global styles
+   ============================================================ */
+
+@theme {
+  --color-navy: #0F0F3D;
+  --color-navy-light: #1a1a5e;
+  --color-navy-dark: #090925;
+  --color-purple: #6D3FD6;
+  --color-purple-light: #8B66E0;
+  --color-purple-dark: #5530A8;
+  --color-teal: #12B886;
+  --color-teal-light: #38D9A9;
+  --color-teal-dark: #0CA678;
+  --color-gold: #FFC857;
+  --color-gold-light: #FFD97A;
+  --color-gold-dark: #F5B800;
+  --color-danger: #F26B6B;
+  --color-danger-light: #F59494;
+  --color-danger-dark: #E84545;
+  --color-page-bg: #F7F7FB;
+  --color-card-bg: #FFFFFF;
+  --color-text-primary: #0F0F3D;
+  --color-text-secondary: #5A5A7A;
+  --color-text-muted: #8E8EA8;
+  --color-border: #E2E2F0;
+  --color-border-light: #F0F0F8;
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --shadow-sm: 0 1px 2px 0 rgb(15 15 61 / 0.04);
+  --shadow-md: 0 4px 6px -1px rgb(15 15 61 / 0.06), 0 2px 4px -2px rgb(15 15 61 / 0.04);
+  --shadow-lg: 0 10px 15px -3px rgb(15 15 61 / 0.08), 0 4px 6px -4px rgb(15 15 61 / 0.04);
+  --shadow-xl: 0 20px 25px -5px rgb(15 15 61 / 0.1), 0 8px 10px -6px rgb(15 15 61 / 0.04);
+}
+
+/* ---- Base ---- */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-page-bg);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---- Focus Indicators (Accessibility) ---- */
+:focus-visible {
+  outline: 2px solid var(--color-purple);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---- Reduced Motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---- Selection ---- */
+::selection {
+  background-color: var(--color-purple);
+  color: white;
+}
+
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-page-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-text-muted);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
