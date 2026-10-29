@@ -28,6 +28,11 @@ import {
   Database,
   Eye,
   Loader2,
+  Volume2,
+  VolumeX,
+  Share2,
+  Printer,
+  X,
 } from "lucide-react";
 import {
   checkPayment,
@@ -37,6 +42,15 @@ import {
 import { DEMO_SERVICES } from "@/lib/demo-data";
 import { saveCitizenCase, type StoredCitizenCase } from "@/lib/supabase";
 import type { PaymentCheckResult, ReceiptStatus } from "@/lib/types";
+
+interface SlipSimulationData {
+  serviceName: string;
+  detectedAmount: number;
+  receiptStatus: ReceiptStatus;
+  kioskId: string;
+  extractedText: string;
+  flags: string[];
+}
 
 function PaymentCheckContent() {
   const searchParams = useSearchParams();
@@ -57,11 +71,25 @@ function PaymentCheckContent() {
     new Date().toISOString().split("T")[0]
   );
 
-  // AI & Voice State
+  // AI & Voice & Media State
   const [isScanning, setIsScanning] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [showPrintModal, setShowPrintModal] = useState(false);
   const [scanMessage, setScanMessage] = useState<string | null>(null);
   const [aiProviderBadge, setAiProviderBadge] = useState<string | null>(null);
+  const [slipSimulation, setSlipSimulation] = useState<SlipSimulationData | null>({
+    serviceName: "Caste Certificate (Jati Praman Patra)",
+    detectedAmount: 250,
+    receiptStatus: "HANDWRITTEN_SLIP",
+    kioskId: "Kiosk #RJ-JP-9041, Sanganer, Jaipur",
+    extractedText: "श्री श्याम ई-मित्र केंद्र, सांगानेर | दिनांक: 24/10/2026 | जाति प्रमाण पत्र शुल्क: ₹250 नकद प्राप्त",
+    flags: [
+      "Handwritten slip is legally invalid under Rajasthan eMitra rules",
+      "Charges exceed statutory maximum of ₹100 by ₹150",
+      "Missing Form 33 computer token number",
+    ],
+  });
   const [isSavingCase, setIsSavingCase] = useState(false);
   const [caseSavedStatus, setCaseSavedStatus] = useState<"idle" | "saved" | "error">("idle");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -142,6 +170,15 @@ function PaymentCheckContent() {
         setAiProviderBadge(data.aiProvider || "AI Vision OCR");
         setScanMessage(`✅ Detected ${data.serviceName}: ₹${data.detectedAmount} (${data.receiptStatus})`);
 
+        setSlipSimulation({
+          serviceName: data.serviceName,
+          detectedAmount: data.detectedAmount,
+          receiptStatus: data.receiptStatus,
+          kioskId: data.kioskIdOrLocation || "Scanned eMitra Point",
+          extractedText: data.extractedText || "OCR extracted text",
+          flags: data.flags || [],
+        });
+
         // Automatically trigger payment check
         handleRunCheck({
           serviceId: data.serviceId,
@@ -205,6 +242,43 @@ function PaymentCheckContent() {
       console.error("Voice recognition init error:", e);
       setIsListening(false);
     }
+  };
+
+  // Audio Readout in Hindi ("सुनकर समझें")
+  const handleToggleAudio = () => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+      alert("Speech synthesis is not supported on this browser.");
+      return;
+    }
+
+    if (isPlayingAudio) {
+      window.speechSynthesis.cancel();
+      setIsPlayingAudio(false);
+      return;
+    }
+
+    if (!result) return;
+
+    const hindiExplanation =
+      result.unexplainedDifference > 0
+        ? `नमस्ते। राजस्थान सरकार के अधिकृत नियमों के अनुसार ${selectedService.nameHindi || selectedService.name} का कुल आधिकारिक शुल्क अधिकतम ₹${result.maxAuthorizedTotal} निर्धारित है। लेकिन आपसे ₹${result.reportedAmount} मांगे गए हैं, जो कि ₹${result.unexplainedDifference} का अवैध अतिरिक्त शुल्क है। बिना फॉर्म 33 कंप्यूटर रसीद के पैसे लेना प्रतिबंधित है। आप टोल-फ्री हेल्पलाइन 181 पर शिकायत दर्ज कर सकते हैं।`
+        : `नमस्ते। आपके द्वारा दिया गया शुल्क ₹${result.reportedAmount} राजस्थान सरकार के निर्धारित नियमों के बिल्कुल अनुकूल है।`;
+
+    const utterance = new SpeechSynthesisUtterance(hindiExplanation);
+    utterance.lang = "hi-IN";
+    utterance.rate = 0.95;
+    utterance.onend = () => setIsPlayingAudio(false);
+    utterance.onerror = () => setIsPlayingAudio(false);
+
+    setIsPlayingAudio(true);
+    window.speechSynthesis.speak(utterance);
+  };
+
+  // WhatsApp 1-Click Share
+  const handleShareWhatsApp = () => {
+    if (!result) return;
+    const msg = `*HAQ सिटिज़न फीस जांच रिपोर्ट* 🏛️\n\n📌 *सेवा:* ${selectedService.name} (${selectedService.nameHindi || ""})\n💰 *सरकारी अधिकतम शुल्क:* ₹${result.maxAuthorizedTotal}\n⚠️ *वसूला गया शुल्क:* ₹${result.reportedAmount}\n🚨 *अवैध अंतर (Overcharge):* ₹${result.unexplainedDifference}\n📜 *नियम:* DoIT&C राजस्थान आदेश F1(23)/DoIT/Tech/11/Vol-V\n\n_बिना फॉर्म 33 कंप्यूटर रसीद के नकद लेना गैर-कानूनी है। राजस्थान संपर्क 181 पर शिकायत दर्ज कराएं।_`;
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
   // Save Case to Supabase & Local Storage
@@ -550,6 +624,59 @@ function PaymentCheckContent() {
               )}
             </div>
 
+            {/* Visual Receipt Slip Simulation with AI Bounding Boxes */}
+            {slipSimulation && (
+              <div className="bg-[#fefee9] rounded-2xl border-2 border-dashed border-amber-300 p-5 shadow-xs relative overflow-hidden font-mono text-slate-800">
+                <div className="flex items-center justify-between pb-3 border-b border-amber-200">
+                  <div className="flex items-center gap-2">
+                    <FileCheck2 className="w-5 h-5 text-amber-700" />
+                    <div>
+                      <span className="text-xs font-bold uppercase tracking-wider block text-amber-900">
+                        Visual Slip / OCR Simulation
+                      </span>
+                      <span className="text-[10px] text-amber-700">
+                        Simulating live Kiosk physical receipt evidence
+                      </span>
+                    </div>
+                  </div>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-200 text-amber-900 uppercase">
+                    {slipSimulation.receiptStatus.replace(/_/g, " ")}
+                  </span>
+                </div>
+
+                <div className="py-3 space-y-2 text-xs">
+                  <div className="flex justify-between items-center text-[11px] text-slate-600">
+                    <span>Point: {slipSimulation.kioskId}</span>
+                    <span>Date: {paymentDate}</span>
+                  </div>
+
+                  <div className="p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-slate-800 text-[11px] leading-relaxed">
+                    &quot;{slipSimulation.extractedText}&quot;
+                  </div>
+
+                  {/* Highlighted AI Bounding Boxes */}
+                  <div className="pt-2 grid grid-cols-2 gap-2 text-[11px]">
+                    <div className="p-2 rounded-lg bg-danger/10 border-2 border-danger text-danger">
+                      <span className="text-[9px] uppercase font-bold block">🚨 AI Bounding Box: Amount</span>
+                      <span className="font-extrabold text-sm block">₹{slipSimulation.detectedAmount}</span>
+                      <span className="text-[10px] font-medium">Statutory Limit: ₹100</span>
+                    </div>
+
+                    <div className="p-2 rounded-lg bg-danger/10 border-2 border-danger text-danger">
+                      <span className="text-[9px] uppercase font-bold block">🚫 Form 33 Computer Token</span>
+                      <span className="font-extrabold text-sm block">NOT DETECTED</span>
+                      <span className="text-[10px] font-medium">eMitra Rule Violation</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-amber-200 flex items-center justify-between text-[10px] text-amber-800">
+                  <span>Stamp: Rajasthan eMitra Kiosk Audit</span>
+                  <span className="font-bold text-teal">Grounded via HAQ</span>
+                </div>
+              </div>
+            )}
+
             {/* User Experience Input Form */}
             <div className="bg-card-bg rounded-2xl border border-border p-6 shadow-sm">
               <h2 className="text-base font-bold text-navy mb-4 flex items-center gap-2">
@@ -777,10 +904,33 @@ function PaymentCheckContent() {
 
                 {/* Grounded Neutral Explanation & Caveats */}
                 <div className="bg-card-bg rounded-2xl border border-border p-6 shadow-sm space-y-4">
-                  <h4 className="font-bold text-navy text-sm flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-purple" />
-                    Source-Grounded Neutral Analysis
-                  </h4>
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <h4 className="font-bold text-navy text-sm flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-purple" />
+                      Source-Grounded Neutral Analysis
+                    </h4>
+                    <button
+                      type="button"
+                      onClick={handleToggleAudio}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-2xs ${
+                        isPlayingAudio
+                          ? "bg-danger text-white animate-pulse"
+                          : "bg-purple/10 hover:bg-purple/20 text-purple border border-purple/30"
+                      }`}
+                    >
+                      {isPlayingAudio ? (
+                        <>
+                          <VolumeX className="w-3.5 h-3.5" />
+                          <span>रूकें (Stop Audio)</span>
+                        </>
+                      ) : (
+                        <>
+                          <Volume2 className="w-3.5 h-3.5" />
+                          <span>🔊 सुनकर समझें (Hindi Audio)</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                   <p className="text-xs sm:text-sm text-text-secondary leading-relaxed whitespace-pre-line bg-page-bg p-4 rounded-xl border border-border-light">
                     {result.neutralExplanation}
                   </p>
@@ -897,7 +1047,23 @@ function PaymentCheckContent() {
                         <span className="font-semibold text-navy">
                           Rajasthan Sampark (Toll-Free 181 / DeGS) Neutral Representation:
                         </span>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <button
+                            type="button"
+                            onClick={handleShareWhatsApp}
+                            className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-2xs"
+                          >
+                            <Share2 className="w-3.5 h-3.5" />
+                            WhatsApp Share
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setShowPrintModal(true)}
+                            className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-900 text-white transition-colors shadow-2xs"
+                          >
+                            <Printer className="w-3.5 h-3.5" />
+                            Formal Notice (Print/PDF)
+                          </button>
                           <button
                             type="button"
                             onClick={() =>
@@ -1015,6 +1181,109 @@ function PaymentCheckContent() {
           </div>
         </div>
       </div>
+
+      {/* Formal Printable Legal Notice Modal */}
+      {showPrintModal && result && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-border relative max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-4 border-b border-border">
+              <div className="flex items-center gap-2">
+                <Printer className="w-5 h-5 text-purple" />
+                <h3 className="font-bold text-navy text-sm">
+                  Official Citizen Grievance Representation Notice
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowPrintModal(false)}
+                className="p-1 rounded-lg text-text-muted hover:text-navy hover:bg-page-bg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Printable Content */}
+            <div className="py-6 space-y-4 text-xs font-serif text-slate-900 leading-relaxed border-b border-border" id="printable-notice">
+              <div className="text-center pb-2 border-b border-slate-300">
+                <span className="font-bold text-sm uppercase block tracking-wider">
+                  FORMAL NOTICE OF STATUTORY FEE SCHEDULE DISCREPANCY
+                </span>
+                <span className="text-[11px] text-slate-600 block mt-0.5">
+                  Under DoIT&amp;C Notification No. F1(23)/DoIT/Tech/11/Vol-V (Rajasthan eMitra Rules)
+                </span>
+              </div>
+
+              <div className="flex justify-between text-[11px]">
+                <div>
+                  <strong>To:</strong><br />
+                  The District Collector / ACP (Joint Director),<br />
+                  Department of Information Technology &amp; Communication (DoIT&amp;C),<br />
+                  DeGS Grievance Cell, Rajasthan.
+                </div>
+                <div className="text-right">
+                  <strong>Date:</strong> {paymentDate}<br />
+                  <strong>Reference Audit ID:</strong> {result.id}
+                </div>
+              </div>
+
+              <div>
+                <strong>Subject:</strong> Formal representation regarding unauthorized fee demand of ₹{result.reportedAmount} for {selectedService.name} at {kioskIdOrLocation}.
+              </div>
+
+              <p>Respected Authority,</p>
+              <p>
+                I, the applicant, visited the eMitra service kiosk at <strong>{kioskIdOrLocation}</strong> on <strong>{paymentDate}</strong> to avail the public service: <strong>{selectedService.name} ({selectedService.nameHindi})</strong>.
+              </p>
+              <p>
+                Under official DoIT&amp;C statutory rate orders, the total maximum authorized citizen fee is strictly capped at <strong>₹{result.maxAuthorizedTotal}</strong> (Statutory Fee: ₹{verifiedSchedule?.statutoryFee || 40} + Kiosk Service Charge: ₹{verifiedSchedule?.kioskServiceCharge || 50} + Paper Print: ₹{verifiedSchedule?.printingCharge || 10}).
+              </p>
+              <p>
+                However, the kiosk operator demanded a sum of <strong>₹{result.reportedAmount}</strong> (Excess Unexplained Charge: <strong>₹{result.unexplainedDifference}</strong>) citing: <em>&quot;{operatorExplanation}&quot;</em>. Furthermore, the mandatory Form 33 computer-generated receipt with transaction token was <strong>{result.receiptStatus === "NO_RECEIPT_PROVIDED" ? "NOT PROVIDED" : result.receiptStatus === "HANDWRITTEN_SLIP" ? "SUBSTITUTED WITH INVALID HANDWRITTEN SLIP" : "REFUSED"}</strong>.
+              </p>
+
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
+                <strong>Statutory Violations Noted:</strong>
+                <ul className="list-disc list-inside text-[11px] space-y-0.5">
+                  <li>Violation of maximum kiosk fee ceiling under Section 4.1.</li>
+                  <li>Breach of mandatory Form 33 computer token issuance rule (Rule 12).</li>
+                </ul>
+              </div>
+
+              <p>
+                It is requested that an inquiry be initiated through the DeGS district surveillance cell, refund of the excess fee be directed, and appropriate compliance action be taken.
+              </p>
+
+              <div className="pt-6 flex justify-between items-end">
+                <div>
+                  <div className="w-32 border-b border-slate-400 mb-1" />
+                  <span className="text-[10px] text-slate-500">Applicant Signature</span>
+                </div>
+                <div className="text-right text-[10px] text-slate-500">
+                  <span>Logged via HAQ Citizen AI Network</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-4 flex items-center justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setShowPrintModal(false)}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary hover:bg-page-bg border border-border transition-colors"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-purple hover:bg-purple-dark text-white shadow-sm transition-colors"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                Print / Save as PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
