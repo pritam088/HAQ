@@ -82,30 +82,33 @@ export default function AdminRulesPage() {
   return (
     <div className="bg-page-bg min-h-screen">
       {/* Header */}
-      <section className="bg-navy text-white py-12 border-b border-white/10">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="relative bg-navy text-white py-14 overflow-hidden border-b border-white/10">
+        <div className="absolute top-0 right-1/4 w-80 h-80 bg-purple/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-8 left-10 w-72 h-72 bg-teal/15 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal/15 border border-teal/30 text-xs font-semibold text-teal">
+              <div className="flex items-center gap-2 mb-2 flex-wrap">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal/15 border border-teal/30 text-xs font-semibold text-teal backdrop-blur-md">
                   <ShieldCheck className="w-3.5 h-3.5" />
                   Reviewer Governance Portal
                 </span>
-                <span className="text-xs text-white/50">
+                <span className="text-xs text-white/60">
                   Role: Authorized Rule Verifier (Demo Mode)
                 </span>
               </div>
-              <h1 className="text-3xl font-extrabold tracking-tight">
-                Official Rule Repository &amp; Review Hub
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                Official Rule Repository &amp; <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal to-purple-light">Review Hub</span>
               </h1>
-              <p className="text-sm text-white/60 mt-1">
+              <p className="text-sm sm:text-base text-white/70 mt-2 max-w-2xl leading-relaxed">
                 Audit statutory citations, verify deadline counting basis, and certify rule records before public release.
               </p>
             </div>
 
             <Link
               href="/sources"
-              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white/80 hover:text-white bg-white/10 hover:bg-white/15 rounded-xl border border-white/15 transition-colors self-start md:self-auto"
+              className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-white/90 hover:text-white bg-white/10 hover:bg-white/15 rounded-xl border border-white/20 transition-all backdrop-blur-md self-start md:self-auto shadow-sm"
             >
               <BookOpen className="w-4 h-4" />
               Public Sources View

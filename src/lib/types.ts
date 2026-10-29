@@ -75,6 +75,8 @@ export interface GovernmentService {
   eligibilitySummary?: string | null;
   requiredDocuments?: string[] | null;
   applicableFee?: string | null;
+  feeBreakdown?: ServiceFeeBreakdown | null;
+  directOnlineProcess?: string | null;
   serviceTimeLimit?: string | null;
   appealRoute?: string | null;
   officialSourceLinks: string[];
@@ -201,3 +203,81 @@ export interface UploadedDocument {
   extractedText?: string;
   uploadedAt: string;
 }
+
+// ============================================================
+// HAQ — Payment & Fee Transparency Models
+// ============================================================
+
+export type ReceiptStatus =
+  | "OFFICIAL_COMPUTER_RECEIPT" // e.g. Form 33 eMitra computer receipt with 16-digit token
+  | "HANDWRITTEN_SLIP"          // Kiosk owner wrote on a scrap of paper
+  | "NO_RECEIPT_PROVIDED"       // Money accepted without receipt
+  | "RECEIPT_REFUSED";          // Citizen asked for receipt and was denied
+
+export interface ServiceFeeBreakdown {
+  serviceId: string;
+  statutoryFee: number;           // Government application/statutory charge (e.g. ₹40)
+  kioskServiceCharge: number;     // Mandated kiosk entry/operator charge (e.g. ₹50)
+  printingCharge: number;         // Security paper certificate print charge (e.g. ₹10)
+  otherAuthorizedCharges?: {
+    name: string;
+    amount: number;
+    mandatory: boolean;
+  }[];
+  maxAuthorizedTotal: number;     // Ceiling payable by citizen (e.g. ₹100)
+  currency: string;               // INR
+  isComputerReceiptMandatory: boolean; // True for eMitra
+  officialSourceDoc: string;      // e.g. "DoIT&C Rate Notification F1(23)/DoIT/Tech/11/Vol-V"
+  sourceUrl: string;
+  lastVerifiedAt: string;         // ISO date
+  directApplicationUrl?: string;  // Self-apply URL (e.g. emitra.rajasthan.gov.in via SSO)
+}
+
+export type PaymentCheckStatus =
+  | "MATCHES_VERIFIED_FEE"
+  | "POSSIBLE_DISCREPANCY_REQUIRING_VERIFICATION"
+  | "INSUFFICIENT_FEE_INFORMATION";
+
+export interface PaymentCheckInput {
+  serviceId: string;
+  reportedAmount: number;
+  receiptStatus: ReceiptStatus;
+  paymentPurpose?: string;          // e.g. "Income Certificate application"
+  operatorExplanation?: string;     // e.g. "Kiosk claimed ₹200 tatkal urgency fee"
+  kioskIdOrLocation?: string;       // e.g. "Kiosk #RJ-JP-1049, Sanganer"
+  paymentDate?: string;
+}
+
+export interface PaymentCheckResult {
+  id: string;
+  status: PaymentCheckStatus;
+  serviceId: string;
+  serviceName: string;
+  reportedAmount: number;
+  feeBreakdown: ServiceFeeBreakdown | null;
+  maxAuthorizedTotal: number;
+  unexplainedDifference: number; // max(0, reportedAmount - maxAuthorizedTotal)
+  matchedAmount: number;
+  receiptStatus: ReceiptStatus;
+  missingEvidence: string[];
+  findings: {
+    title: string;
+    description: string;
+    severity: "info" | "warning" | "alert";
+  }[];
+  neutralExplanation: string;
+  caveats: string[];
+  directActionSteps: {
+    demandReceiptScript: string;
+    directOnlineApplicationGuide: string;
+    grievanceChannel: {
+      name: string;
+      tollFree: string;
+      portalUrl: string;
+      nodalAuthority: string;
+    };
+    neutralComplaintDraft: string;
+  };
+  checkedAt: string;
+}
+

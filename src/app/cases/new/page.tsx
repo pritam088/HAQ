@@ -24,7 +24,7 @@ import {
   Paperclip,
   Trash2,
 } from "lucide-react";
-import { getDemoServiceById, getDemoRulesForService } from "@/lib/demo-data";
+import { getServiceById, getRulesForService, saveCitizenCase } from "@/lib/supabase";
 import { checkRule, validateDates, type RuleCheckInput } from "@/lib/rule-engine";
 import type { GovernmentService, OfficialRule, RuleCheckResult } from "@/lib/types";
 
@@ -111,9 +111,16 @@ function CaseFormContent() {
 
   useEffect(() => {
     if (serviceId) {
-      const s = getDemoServiceById(serviceId);
-      setService(s || null);
-      setRules(getDemoRulesForService(serviceId));
+      let active = true;
+      getServiceById(serviceId).then((s) => {
+        if (active) setService(s || null);
+      });
+      getRulesForService(serviceId).then((r) => {
+        if (active) setRules(r);
+      });
+      return () => {
+        active = false;
+      };
     }
   }, [serviceId]);
 
@@ -195,6 +202,28 @@ function CaseFormContent() {
       setResult(ruleResult);
       setStep("results");
 
+      // Auto-save case to Supabase
+      saveCitizenCase({
+        id: `case-${Date.now()}`,
+        serviceId: service.id,
+        serviceName: service.name,
+        applicationDate: applicationDate || null,
+        acknowledgementDate: acknowledgementDate || null,
+        applicationReference: referenceNumber || null,
+        currentStatus: "Under Processing",
+        actualCompletionDate: actualCompletionDate || null,
+        userNotes: userNotes || null,
+        status: "PROCESSING",
+        resultStatus: ruleResult.status,
+        elapsedDays: ruleResult.calculation?.elapsedDays,
+        allowedDays: ruleResult.calculation?.allowedDays,
+        differenceDays: ruleResult.calculation?.differencedays,
+        ruleTitle: ruleResult.ruleTitle,
+        sourceUrl: ruleResult.ruleParameters.sourceUrl,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }).catch((err) => console.warn("Supabase background save:", err));
+
       // Fetch AI explanation
       setAiLoading(true);
       try {
@@ -224,19 +253,42 @@ function CaseFormContent() {
   return (
     <div className="bg-page-bg min-h-screen">
       {/* Header */}
-      <section className="bg-navy text-white py-8">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      <section className="relative bg-navy text-white py-10 overflow-hidden border-b border-white/10">
+        <div className="absolute top-0 right-1/4 w-72 h-72 bg-purple/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-8 left-10 w-64 h-64 bg-teal/15 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <Link
             href={`/services/${serviceId}`}
-            className="inline-flex items-center gap-1.5 text-sm text-white/60 hover:text-white transition-colors mb-3"
+            className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-white/70 hover:text-white transition-colors mb-4 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/15 border border-white/15 backdrop-blur-md"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to {service.name}
           </Link>
-          <h1 className="text-2xl font-extrabold">
-            {step === "results" ? "Rule Check Results" : "New Rule Check"}
-          </h1>
-          <p className="text-white/60 text-sm mt-1">{service.name}</p>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                {step === "results" ? (
+                  <span>
+                    Rule Check <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal to-purple-light">Results</span>
+                  </span>
+                ) : (
+                  <span>
+                    New Service Rule <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal to-purple-light">Verification</span>
+                  </span>
+                )}
+              </h1>
+              <p className="text-white/75 text-sm sm:text-base mt-1.5 font-medium flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-teal animate-pulse" />
+                {service.name}
+              </p>
+            </div>
+            <div className="self-start sm:self-center">
+              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-white/90 border border-white/20 backdrop-blur-md">
+                {service.state} • {service.department.split("(")[0].trim()}
+              </span>
+            </div>
+          </div>
         </div>
       </section>
 

@@ -1,0 +1,24 @@
+# ============================================================
+# HAQ — Render Blueprint & Service Configuration
+# Deployment definition for Build The AI For YOU 2026 Hackathon
+# ============================================================
+
+services:
+  - type: web
+    name: haq-platform
+    env: node
+    plan: standard
+    region: oregon
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 20.18.0
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        value: https://ztfixhphqczpiyevgibw.supabase.co
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false

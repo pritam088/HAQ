@@ -15,8 +15,9 @@ import {
   ChevronRight,
   AlertTriangle,
   BookOpen,
+  Sparkles,
 } from "lucide-react";
-import { getDemoServiceById, getDemoRulesForService } from "@/lib/demo-data";
+import { getServiceById, getRulesForService } from "@/lib/supabase";
 import type { Metadata } from "next";
 import type { VerificationStatus } from "@/lib/types";
 
@@ -36,7 +37,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { serviceId } = await params;
-  const service = getDemoServiceById(serviceId);
+  const service = await getServiceById(serviceId);
   if (!service) return { title: "Service Not Found | HAQ" };
   return {
     title: `${service.name} | HAQ — आपका अधिकार`,
@@ -87,34 +88,35 @@ function VerificationBadge({ status }: { status: VerificationStatus }) {
 
 export default async function ServiceDetailPage({ params }: PageProps) {
   const { serviceId } = await params;
-  const service = getDemoServiceById(serviceId);
+  const service = await getServiceById(serviceId);
   if (!service) return notFound();
 
-  const rules = getDemoRulesForService(serviceId);
+  const rules = await getRulesForService(serviceId);
 
   return (
     <div className="bg-page-bg min-h-screen">
       {/* Header */}
-      <section className="bg-navy text-white py-10 sm:py-14">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="relative bg-navy text-white py-10 sm:py-14 overflow-hidden">
+        <div className="absolute top-0 right-[10%] w-72 h-72 bg-purple/10 rounded-full blur-3xl" aria-hidden="true" />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Link
             href="/services"
-            className="inline-flex items-center gap-1.5 text-sm text-white/60 hover:text-white transition-colors mb-4"
+            className="inline-flex items-center gap-1.5 text-sm text-white/50 hover:text-white transition-colors mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
             All Services
           </Link>
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 animate-fade-in-up">
             <div>
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
                 {service.name}
               </h1>
               {service.nameHindi && (
-                <p className="text-white/50 text-sm mt-1">
+                <p className="text-white/45 text-sm mt-1">
                   {service.nameHindi}
                 </p>
               )}
-              <div className="flex items-center gap-3 mt-3 text-sm text-white/60">
+              <div className="flex items-center gap-3 mt-3 text-sm text-white/55">
                 <span className="flex items-center gap-1">
                   <MapPin className="w-3.5 h-3.5" />
                   {service.state}
@@ -245,30 +247,72 @@ export default async function ServiceDetailPage({ params }: PageProps) {
 
           {/* Sidebar */}
           <div className="space-y-5">
-            {/* CTA Card */}
-            <div className="bg-purple/5 border border-purple/20 rounded-2xl p-6">
-              <h3 className="text-base font-semibold text-navy mb-2">
-                Check Your Application
+            {/* Primary Action Card: Check Payment & Overcharging */}
+            <div className="bg-gradient-to-br from-purple/10 via-purple/5 to-teal/5 border-2 border-purple/30 rounded-2xl p-6 shadow-sm">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-teal text-white tracking-wider uppercase mb-2 inline-block">
+                RECOMMENDED FIRST STEP
+              </span>
+              <h3 className="text-base font-bold text-navy mb-1 flex items-center gap-1.5">
+                <IndianRupee className="w-4 h-4 text-purple" />
+                Check Kiosk Charges &amp; Fees
               </h3>
-              <p className="text-sm text-text-secondary mb-4">
-                Enter your application details to compare against the service
-                rules.
+              <p className="text-xs text-text-secondary leading-relaxed mb-4">
+                Did a kiosk ask for extra money or fail to give an eMitra computer receipt? Check against official DoIT&amp;C rates.
+              </p>
+              <Link
+                href={`/payments/check?serviceId=${service.id}`}
+                className="btn-press inline-flex items-center justify-center gap-2 w-full px-4 py-3 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-purple to-purple-dark hover:from-purple-dark hover:to-navy rounded-xl transition-all shadow-md active:scale-95"
+                id={`check-payment-${service.id}`}
+              >
+                <Shield className="w-4 h-4 text-gold" />
+                <span>Verify What You Should Pay</span>
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            {/* Direct Official Route Card */}
+            <div className="bg-white border border-teal/30 rounded-2xl p-5 shadow-2xs space-y-2.5">
+              <span className="text-[11px] font-bold text-teal flex items-center gap-1">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                Apply Directly (Bypass Kiosks)
+              </span>
+              <p className="text-xs text-text-secondary leading-relaxed">
+                You can apply directly from your home PC or mobile via Rajasthan SSO (<strong>sso.rajasthan.gov.in</strong>). Pay only ₹40 statutory fee online; zero kiosk intermediary fees.
+              </p>
+              <a
+                href="https://sso.rajasthan.gov.in/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-purple hover:underline pt-1"
+              >
+                <span>Open Rajasthan SSO Portal</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
+
+            {/* Secondary Action: Timeline Checker */}
+            <div className="bg-card-bg border border-border rounded-2xl p-5 shadow-2xs space-y-2">
+              <h3 className="text-sm font-bold text-navy flex items-center gap-1.5">
+                <Clock className="w-4 h-4 text-purple" />
+                Check Delivery Timeline
+              </h3>
+              <p className="text-xs text-text-secondary leading-relaxed">
+                Already submitted an application? Compare your elapsed days against the statutory service guarantee.
               </p>
               <Link
                 href={`/cases/new?serviceId=${service.id}`}
-                className="inline-flex items-center justify-center gap-2 w-full px-4 py-3 text-sm font-semibold text-white bg-purple hover:bg-purple-dark rounded-xl transition-colors shadow-sm"
+                className="inline-flex items-center justify-center gap-1.5 w-full px-3 py-2 text-xs font-bold text-navy bg-page-bg hover:bg-border-light border border-border rounded-xl transition-colors mt-2"
                 id={`start-check-${service.id}`}
               >
-                <Shield className="w-4 h-4" />
-                Start Rule Check
-                <ChevronRight className="w-4 h-4" />
+                <span>Verify Statutory Delivery Timeline</span>
+                <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
             {/* Quick Info */}
             <div className="bg-card-bg rounded-2xl border border-border p-6 shadow-sm">
               <h3 className="text-sm font-semibold text-navy mb-4">
-                Quick Information
+                Official Mandated Parameters
               </h3>
               <dl className="space-y-3">
                 {service.serviceTimeLimit && (
