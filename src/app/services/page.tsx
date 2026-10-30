@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { DEMO_SERVICES } from "@/lib/demo-data";
 import { getServices } from "@/lib/supabase";
+import { VERIFIED_FEE_SCHEDULES } from "@/lib/fee-engine";
 import type { GovernmentService, VerificationStatus } from "@/lib/types";
 
 function VerificationBadge({ status }: { status: VerificationStatus }) {
@@ -206,7 +207,7 @@ export default function ServicesPage() {
                 <div className="flex items-center gap-2 flex-wrap mb-4">
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-teal/10 text-teal border border-teal/20">
                     <IndianRupee className="w-3 h-3" />
-                    Max: ₹100 (DoIT&amp;C)
+                    Max: ₹{VERIFIED_FEE_SCHEDULES[service.id]?.maxAuthorizedTotal ?? 100} (DoIT&amp;C)
                   </span>
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-page-bg text-text-secondary border border-border">
                     <Clock className="w-3 h-3 text-purple" />
