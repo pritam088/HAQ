@@ -78,18 +78,7 @@ function PaymentCheckContent() {
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [scanMessage, setScanMessage] = useState<string | null>(null);
   const [aiProviderBadge, setAiProviderBadge] = useState<string | null>(null);
-  const [slipSimulation, setSlipSimulation] = useState<SlipSimulationData | null>({
-    serviceName: "Caste Certificate (Jati Praman Patra)",
-    detectedAmount: 250,
-    receiptStatus: "HANDWRITTEN_SLIP",
-    kioskId: "Kiosk #RJ-JP-9041, Sanganer, Jaipur",
-    extractedText: "श्री श्याम ई-मित्र केंद्र, सांगानेर | दिनांक: 24/10/2026 | जाति प्रमाण पत्र शुल्क: ₹250 नकद प्राप्त",
-    flags: [
-      "Handwritten slip is legally invalid under Rajasthan eMitra rules",
-      "Charges exceed statutory maximum of ₹100 by ₹150",
-      "Missing Form 33 computer token number",
-    ],
-  });
+  const [slipSimulation, setSlipSimulation] = useState<SlipSimulationData | null>(null);
   const [isSavingCase, setIsSavingCase] = useState(false);
   const [caseSavedStatus, setCaseSavedStatus] = useState<"idle" | "saved" | "error">("idle");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -628,18 +617,18 @@ function PaymentCheckContent() {
               )}
             </div>
 
-            {/* Visual Receipt Slip Simulation with AI Bounding Boxes */}
-            {slipSimulation && (
-              <div className="bg-[#fefee9] rounded-2xl border-2 border-dashed border-amber-300 p-5 shadow-xs relative overflow-hidden font-mono text-slate-800">
+            {/* Visual Receipt Slip Inspection with AI Bounding Boxes */}
+            {slipSimulation ? (
+              <div className="bg-[#fefee9] rounded-2xl border-2 border-dashed border-amber-300 p-5 shadow-xs relative overflow-hidden font-mono text-slate-800 animate-fade-in">
                 <div className="flex items-center justify-between pb-3 border-b border-amber-200">
                   <div className="flex items-center gap-2">
                     <FileCheck2 className="w-5 h-5 text-amber-700" />
                     <div>
                       <span className="text-xs font-bold uppercase tracking-wider block text-amber-900">
-                        Visual Slip / OCR Simulation
+                        Audited Kiosk Receipt Evidence
                       </span>
                       <span className="text-[10px] text-amber-700">
-                        Simulating live Kiosk physical receipt evidence
+                        Physical slip audit &amp; Form 33 token verification
                       </span>
                     </div>
                   </div>
@@ -668,8 +657,12 @@ function PaymentCheckContent() {
 
                     <div className="p-2 rounded-lg bg-danger/10 border-2 border-danger text-danger">
                       <span className="text-[9px] uppercase font-bold block">🚫 Form 33 Computer Token</span>
-                      <span className="font-extrabold text-sm block">NOT DETECTED</span>
-                      <span className="text-[10px] font-medium">eMitra Rule Violation</span>
+                      <span className="font-extrabold text-sm block">
+                        {slipSimulation.receiptStatus === "OFFICIAL_COMPUTER_RECEIPT" ? "VERIFIED (16-DIGIT)" : "NOT DETECTED"}
+                      </span>
+                      <span className="text-[10px] font-medium">
+                        {slipSimulation.receiptStatus === "OFFICIAL_COMPUTER_RECEIPT" ? "Compliant eMitra Token" : "eMitra Rule Violation"}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -678,6 +671,13 @@ function PaymentCheckContent() {
                   <span>Stamp: Rajasthan eMitra Kiosk Audit</span>
                   <span className="font-bold text-teal">Grounded via HAQ</span>
                 </div>
+              </div>
+            ) : (
+              <div className="p-4 rounded-2xl border border-dashed border-border bg-page-bg/60 text-center text-xs text-text-muted">
+                <p className="font-semibold text-navy text-xs">Evidence Slip Inspector Ready</p>
+                <p className="text-[11px] mt-1 text-text-secondary">
+                  Upload a photo of your receipt above, speak via microphone, or click a 1-click test scenario to inspect physical slip compliance and token validity.
+                </p>
               </div>
             )}
 
