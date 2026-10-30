@@ -728,6 +728,7 @@ function CaseFormContent() {
             rule={rules[0]}
             service={service}
             aiExplanation={aiExplanation}
+            aiModel={aiModel}
             aiLoading={aiLoading}
           />
         )}
@@ -759,12 +760,14 @@ function ResultsView({
   rule,
   service,
   aiExplanation,
+  aiModel,
   aiLoading,
 }: {
   result: RuleCheckResult;
   rule: OfficialRule;
   service: GovernmentService;
   aiExplanation: string;
+  aiModel?: string;
   aiLoading: boolean;
 }) {
   const statusConfig = {
