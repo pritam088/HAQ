@@ -8,6 +8,7 @@ import {
   X,
   Shield,
   ChevronRight,
+  Sparkles,
 } from "lucide-react";
 
 const navLinks = [
@@ -34,6 +35,11 @@ export function Navbar() {
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
+
+  const openHaqSaathi = () => {
+    setMobileOpen(false);
+    window.dispatchEvent(new CustomEvent("open-haq-saathi"));
+  };
 
   useEffect(() => {
     if (mobileOpen) {
@@ -104,8 +110,20 @@ export function Navbar() {
             })}
           </div>
 
-          {/* CTA */}
-          <div className="hidden md:flex items-center gap-3">
+          {/* CTA & Hak Saathi AI Trigger */}
+          <div className="hidden md:flex items-center gap-2.5">
+            <button
+              type="button"
+              onClick={openHaqSaathi}
+              className="btn-press inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-navy hover:text-purple bg-purple/10 hover:bg-purple/15 rounded-xl border border-purple/20 transition-all shadow-2xs cursor-pointer active:scale-95"
+              id="desktop-open-haq-saathi"
+              title="Open Hak Saathi (Civic AI Assistant)"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-purple animate-pulse" />
+              <span>हक साथी (AI)</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            </button>
+
             <Link
               href="/payments/check"
               className="btn-press inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-purple to-purple-dark hover:from-purple-dark hover:to-navy rounded-xl transition-all duration-200 shadow-sm hover:shadow-md hover:shadow-purple/15 active:scale-95"
@@ -151,7 +169,25 @@ export function Navbar() {
         }`}
       >
         <div className="px-4 py-4 space-y-1 divide-y divide-border-light">
-          <div className="space-y-1 pb-3">
+          {/* Hak Saathi AI Top Trigger */}
+          <div className="pb-2">
+            <button
+              type="button"
+              onClick={openHaqSaathi}
+              className="btn-press flex items-center justify-between px-3.5 py-3 text-sm font-bold rounded-xl text-purple bg-purple/10 hover:bg-purple/15 border border-purple/20 transition-all w-full text-left shadow-2xs cursor-pointer"
+              id="mobile-open-haq-saathi"
+            >
+              <span className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-purple animate-pulse" />
+                <span>हक साथी (Ask HAQ AI)</span>
+              </span>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-teal text-white leading-tight">
+                AI ONLINE
+              </span>
+            </button>
+          </div>
+
+          <div className="space-y-1 py-3">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (

@@ -76,6 +76,12 @@ export function HaqSaathiChat() {
     }
   }, [messages, isOpen, isLoading]);
 
+  useEffect(() => {
+    const handleOpen = () => setIsOpen(true);
+    window.addEventListener("open-haq-saathi", handleOpen);
+    return () => window.removeEventListener("open-haq-saathi", handleOpen);
+  }, []);
+
   const speakText = (id: string, text: string) => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) {
       alert("Text-to-speech is not supported on this browser.");
@@ -195,7 +201,7 @@ export function HaqSaathiChat() {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 sm:bottom-5 sm:right-5 z-35">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[60]">
       {/* Floating Trigger Button */}
       {!isOpen && (
         <button
