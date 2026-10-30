@@ -125,7 +125,7 @@ export default function ServicesPage() {
               Verified Rajasthan eMitra Services
             </p>
             <p className="text-xs text-text-secondary mt-0.5">
-              The services below are grounded in DoIT&C Rate Notification F1(23)/DoIT/Tech/11/Vol-V and the Rajasthan Guaranteed Delivery of Public Services Act 2011. Stored in Supabase cloud database.
+              The services below are grounded in DoIT&C Rate Notification F1(23)/DoIT/Tech/11/Vol-V and the Rajasthan Guaranteed Delivery of Public Services Act 2011. Officially notified state delivery guarantees and maximum kiosk rates.
             </p>
           </div>
         </div>

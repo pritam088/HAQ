@@ -25,6 +25,8 @@ interface PageProps {
   params: Promise<{ serviceId: string }>;
 }
 
+
+
 export const instant = false;
 
 export function generateStaticParams() {

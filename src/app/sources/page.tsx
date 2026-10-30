@@ -155,13 +155,6 @@ export default function SourcesPage() {
                 Inspect currently cataloged rules, source URLs, and verification classifications.
               </p>
             </div>
-            <Link
-              href="/admin/rules"
-              className="inline-flex items-center gap-2 text-xs font-semibold text-purple hover:text-purple-dark bg-purple/10 px-4 py-2 rounded-xl border border-purple/20 transition-all hover:bg-purple/15 self-start sm:self-auto shadow-sm"
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              Rule Inspector &amp; Simulator
-            </Link>
           </div>
 
           <div className="space-y-5">

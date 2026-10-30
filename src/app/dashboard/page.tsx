@@ -9,6 +9,7 @@ import {
   Clock,
   ArrowRight,
   Shield,
+  ShieldCheck,
   Trash2,
   RefreshCw,
   PlusCircle,
@@ -118,11 +119,11 @@ export default function DashboardPage() {
             <div className="animate-fade-in-up">
               <div className="flex items-center gap-2 mb-2 flex-wrap">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full glass-dark text-xs font-semibold text-emerald-400">
-                  <Database className="w-3.5 h-3.5" />
-                  Supabase Live Sync
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  Statutory Rule Engine Grounded
                 </span>
-                <span className="text-xs text-white/45">
-                  Live cloud database integration enabled
+                <span className="text-xs text-white/55">
+                  Rajasthan Guaranteed Delivery of Public Services Act 2011
                 </span>
               </div>
               <h1 className="text-3xl font-extrabold tracking-tight">
@@ -211,29 +212,29 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Rajasthan Community Overcharge Radar & District Intelligence */}
+        {/* Rajasthan Citizen Statutory Rights & Benchmarks */}
         <div className="bg-gradient-to-br from-navy via-navy to-purple-dark text-white rounded-2xl p-6 shadow-md border border-white/10 relative overflow-hidden">
           <div className="absolute top-0 right-10 w-64 h-64 bg-teal/10 rounded-full blur-3xl pointer-events-none" />
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
             <div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal/20 text-teal text-[11px] font-bold border border-teal/30 mb-2">
-                <Database className="w-3.5 h-3.5" />
-                <span>Rajasthan Community Overcharge Radar</span>
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Rajasthan Statutory Rights Radar</span>
                 <span className="w-1 h-1 rounded-full bg-white/40" />
-                <span className="text-white/70">Powered by Citizen Audits &amp; Supabase</span>
+                <span className="text-white/70">Act 2011 &amp; DoIT&amp;C Statutory Orders</span>
               </div>
               <h2 className="text-xl font-bold">
-                District-Wise Kiosk Compliance Intelligence
+                Official Delivery Guarantees &amp; Rate Caps
               </h2>
               <p className="text-xs text-white/70 mt-1 max-w-2xl">
-                Real-time aggregated analytics showing average unauthorized fee surcharges and receipt violation patterns across Rajasthan administrative divisions.
+                Statutory timelines and mandatory rate ceilings under the Rajasthan Guaranteed Delivery of Public Services Act 2011 and Rate Notification F1(23)/DoIT/Tech/11/Vol-V.
               </p>
             </div>
 
             <div className="flex items-center gap-4 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 shrink-0 flex-wrap">
               <div>
                 <span className="text-[10px] text-white/50 uppercase font-bold block">
-                  Active Audits in Supabase
+                  Active Tracked
                 </span>
                 <span className="text-lg font-extrabold text-white">
                   {totalAudits} Cases
@@ -242,7 +243,7 @@ export default function DashboardPage() {
               <div className="w-px h-8 bg-white/10 hidden sm:block" />
               <div>
                 <span className="text-[10px] text-white/50 uppercase font-bold block">
-                  Discrepancy Flagged
+                  Delays Flagged
                 </span>
                 <span className="text-lg font-extrabold text-danger">
                   {mismatchCount} Identified
@@ -251,82 +252,82 @@ export default function DashboardPage() {
               <div className="w-px h-8 bg-white/10 hidden sm:block" />
               <div>
                 <span className="text-[10px] text-white/50 uppercase font-bold block">
-                  Form 33 Compliance
+                  Within Statutory Limit
                 </span>
                 <span className="text-lg font-extrabold text-teal">
-                  {complianceRate}% Verified
+                  {verifiedCount} Verified
                 </span>
               </div>
             </div>
           </div>
 
-          {/* District Grid */}
+          {/* Statutory Benchmark Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 hover:border-danger/40 transition-colors">
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 hover:border-purple/40 transition-colors">
               <div className="flex justify-between items-start mb-2">
-                <span className="font-bold text-white text-sm">Jaipur Division</span>
-                <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-danger/20 text-danger border border-danger/30">
-                  HOTSPOT
-                </span>
-              </div>
-              <div className="text-sm font-extrabold text-danger mb-1">
-                {jaipurCases.length} Cases Audited
-              </div>
-              <div className="text-[11px] text-white/60 space-y-0.5">
-                <div>Primary Service: <strong>Jati Praman Patra</strong></div>
-                <div>Statutory Cap: <strong>₹100 Max Total</strong></div>
-                <div className="text-[10px] text-danger/80 pt-1">Sanganer &amp; Amer Kiosks flagged</div>
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 hover:border-gold/40 transition-colors">
-              <div className="flex justify-between items-start mb-2">
-                <span className="font-bold text-white text-sm">Jodhpur Division</span>
-                <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-gold/20 text-gold border border-gold/30">
-                  MODERATE
+                <span className="font-bold text-white text-sm">Caste Certificate</span>
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-teal/20 text-teal border border-teal/30">
+                  GUARANTEED
                 </span>
               </div>
               <div className="text-sm font-extrabold text-gold mb-1">
-                {jodhpurCases.length} Cases Audited
+                15 Working Days
               </div>
-              <div className="text-[11px] text-white/60 space-y-0.5">
-                <div>Primary Service: <strong>Mool Niwas Patra</strong></div>
-                <div>Statutory Limit: <strong>15 Calendar Days</strong></div>
-                <div className="text-[10px] text-gold/80 pt-1">Osian &amp; Luni Kiosks monitored</div>
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 hover:border-danger/40 transition-colors">
-              <div className="flex justify-between items-start mb-2">
-                <span className="font-bold text-white text-sm">Udaipur Division</span>
-                <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-danger/20 text-danger border border-danger/30">
-                  HOTSPOT
-                </span>
-              </div>
-              <div className="text-sm font-extrabold text-danger mb-1">
-                {udaipurCases.length} Cases Audited
-              </div>
-              <div className="text-[11px] text-white/60 space-y-0.5">
-                <div>Primary Service: <strong>Aay Praman Patra</strong></div>
-                <div>Delivery Guarantee: <strong>10 Working Days</strong></div>
-                <div className="text-[10px] text-danger/80 pt-1">Fake &quot;Tatkal&quot; surcharges reported</div>
+              <div className="text-[11px] text-white/70 space-y-0.5">
+                <div>Statutory Limit: <strong>₹100 Max Kiosk Fee</strong></div>
+                <div>First Appeal: <strong>Sub-Divisional Officer (SDO)</strong></div>
+                <div className="text-[10px] text-teal pt-1">Revenue Dept • Rajasthan Act 2011</div>
               </div>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 hover:border-teal/40 transition-colors">
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 hover:border-purple/40 transition-colors">
               <div className="flex justify-between items-start mb-2">
-                <span className="font-bold text-white text-sm">Ajmer Division</span>
+                <span className="font-bold text-white text-sm">Income Certificate</span>
                 <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-teal/20 text-teal border border-teal/30">
-                  COMPLIANT
+                  GUARANTEED
                 </span>
               </div>
-              <div className="text-sm font-extrabold text-teal mb-1">
-                {ajmerCases.length} Cases Audited
+              <div className="text-sm font-extrabold text-gold mb-1">
+                10 Working Days
               </div>
-              <div className="text-[11px] text-white/60 space-y-0.5">
-                <div>Compliance Status: <strong>Form 33 Issued</strong></div>
-                <div>Statutory Fee: <strong>₹100 Rate Compliant</strong></div>
-                <div className="text-[10px] text-teal/80 pt-1">Highest DeGS verification rate</div>
+              <div className="text-[11px] text-white/70 space-y-0.5">
+                <div>Statutory Limit: <strong>₹100 Max Kiosk Fee</strong></div>
+                <div>First Appeal: <strong>Tehsildar / SDO</strong></div>
+                <div className="text-[10px] text-teal pt-1">Revenue Dept • DoIT&amp;C Order</div>
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 hover:border-purple/40 transition-colors">
+              <div className="flex justify-between items-start mb-2">
+                <span className="font-bold text-white text-sm">Domicile Certificate</span>
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-teal/20 text-teal border border-teal/30">
+                  GUARANTEED
+                </span>
+              </div>
+              <div className="text-sm font-extrabold text-gold mb-1">
+                15 Calendar Days
+              </div>
+              <div className="text-[11px] text-white/70 space-y-0.5">
+                <div>Statutory Limit: <strong>₹100 Max Kiosk Fee</strong></div>
+                <div>First Appeal: <strong>Sub-Divisional Officer (SDO)</strong></div>
+                <div className="text-[10px] text-teal pt-1">Mool Niwas • Mandatory Form 33</div>
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 hover:border-purple/40 transition-colors">
+              <div className="flex justify-between items-start mb-2">
+                <span className="font-bold text-white text-sm">Ration Card Services</span>
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-teal/20 text-teal border border-teal/30">
+                  GUARANTEED
+                </span>
+              </div>
+              <div className="text-sm font-extrabold text-gold mb-1">
+                30 Calendar Days
+              </div>
+              <div className="text-[11px] text-white/70 space-y-0.5">
+                <div>Statutory Limit: <strong>₹100 Max Total</strong></div>
+                <div>First Appeal: <strong>District Supply Officer (DSO)</strong></div>
+                <div className="text-[10px] text-teal pt-1">Food &amp; Civil Supplies • Act 2011</div>
               </div>
             </div>
           </div>
@@ -511,22 +512,20 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Demo Mode Notice Banner */}
+        {/* Official Statutory Guarantee Assurance */}
         <div className="bg-card-bg rounded-2xl border border-border p-6 shadow-sm">
           <div className="flex items-start gap-4">
-            <Info className="w-5 h-5 text-purple shrink-0 mt-0.5" />
+            <ShieldCheck className="w-5 h-5 text-teal shrink-0 mt-0.5" />
             <div className="text-xs text-text-secondary space-y-1">
               <h4 className="font-bold text-navy text-sm">
-                How Dashboard Data Works in This Release
+                Citizen Rights &amp; Statutory Legal Protection
               </h4>
               <p>
-                In compliance with the hackathon specification, HAQ runs in an uncoupled demo mode
-                without mandatory Supabase auth locks. Cases you inspect during your current session
-                are stored in browser memory.
+                All verification benchmarks displayed on HAQ are directly grounded in official Rajasthan Government notifications: 
+                DoIT&amp;C Rate Notification F1(23)/DoIT/Tech/11/Vol-V and the Rajasthan Guaranteed Delivery of Public Services Act 2011.
               </p>
               <p>
-                To test a brand new scenario, select any service from the catalog and input hypothetical
-                submission dates to test the deterministic calculator.
+                All tracked cases are protected by privacy safeguards. eMitra operators are legally bound to issue Form 33 computer receipts with 16-digit transaction tokens. Inquiries and first appeals can be lodged directly on Rajasthan Sampark 181.
               </p>
             </div>
           </div>

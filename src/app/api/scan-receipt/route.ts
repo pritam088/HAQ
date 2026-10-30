@@ -103,12 +103,14 @@ Extract the following information in strict JSON format:
   "flags": ["list of suspicious discrepancies detected"]
 }`;
 
-        const parts: Array<{ text?: string; inline_data?: { mime_type: string; data: string } }> = [];
+        const parts: Array<{ text?: string; inlineData?: { mimeType: string; data: string } }> = [];
         if (imageBase64) {
-          const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, "");
+          const mimeMatch = imageBase64.match(/^data:(image\/[a-zA-Z+]+);base64,/);
+          const mimeType = mimeMatch ? mimeMatch[1] : "image/jpeg";
+          const cleanBase64 = imageBase64.replace(/^data:image\/[a-zA-Z+]+;base64,/, "");
           parts.push({
-            inline_data: {
-              mime_type: "image/jpeg",
+            inlineData: {
+              mimeType,
               data: cleanBase64,
             },
           });

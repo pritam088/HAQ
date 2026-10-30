@@ -617,66 +617,85 @@ function PaymentCheckContent() {
               )}
             </div>
 
-            {/* Visual Receipt Slip Inspection with AI Bounding Boxes */}
+            {/* Verified Receipt OCR Extraction & Token Compliance */}
             {slipSimulation ? (
-              <div className="bg-[#fefee9] rounded-2xl border-2 border-dashed border-amber-300 p-5 shadow-xs relative overflow-hidden font-mono text-slate-800 animate-fade-in">
-                <div className="flex items-center justify-between pb-3 border-b border-amber-200">
+              <div className="bg-white rounded-2xl border border-border p-5 shadow-xs relative overflow-hidden animate-fade-in text-navy">
+                <div className="flex items-center justify-between pb-3 border-b border-border-light">
                   <div className="flex items-center gap-2">
-                    <FileCheck2 className="w-5 h-5 text-amber-700" />
+                    <FileCheck2 className="w-5 h-5 text-purple" />
                     <div>
-                      <span className="text-xs font-bold uppercase tracking-wider block text-amber-900">
-                        Audited Kiosk Receipt Evidence
+                      <span className="text-xs font-bold uppercase tracking-wider block text-navy">
+                        Receipt OCR Extraction &amp; Token Audit
                       </span>
-                      <span className="text-[10px] text-amber-700">
-                        Physical slip audit &amp; Form 33 token verification
+                      <span className="text-[11px] text-text-muted">
+                        Physical slip inspection &amp; Form 33 eMitra verification
                       </span>
                     </div>
                   </div>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-200 text-amber-900 uppercase">
+                  <span className={`px-2.5 py-1 rounded-lg text-[10px] font-extrabold uppercase border ${
+                    slipSimulation.receiptStatus === "OFFICIAL_COMPUTER_RECEIPT"
+                      ? "bg-teal/10 text-teal border-teal/20"
+                      : "bg-danger/10 text-danger border-danger/20"
+                  }`}>
                     {slipSimulation.receiptStatus.replace(/_/g, " ")}
                   </span>
                 </div>
 
-                <div className="py-3 space-y-2 text-xs">
-                  <div className="flex justify-between items-center text-[11px] text-slate-600">
-                    <span>Point: {slipSimulation.kioskId}</span>
-                    <span>Date: {paymentDate}</span>
+                <div className="py-3 space-y-3 text-xs">
+                  <div className="flex justify-between items-center text-[11px] text-text-secondary bg-page-bg p-2.5 rounded-xl border border-border-light">
+                    <span><strong>Service Point:</strong> {slipSimulation.kioskId}</span>
+                    <span><strong>Transaction Date:</strong> {paymentDate}</span>
                   </div>
 
-                  <div className="p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-slate-800 text-[11px] leading-relaxed">
-                    &quot;{slipSimulation.extractedText}&quot;
+                  <div>
+                    <span className="text-[11px] font-semibold text-text-muted block mb-1">
+                      Extracted Receipt Text:
+                    </span>
+                    <div className="p-3 rounded-xl bg-page-bg border border-border text-navy font-mono text-xs leading-relaxed">
+                      &quot;{slipSimulation.extractedText}&quot;
+                    </div>
                   </div>
 
-                  {/* Highlighted AI Bounding Boxes */}
-                  <div className="pt-2 grid grid-cols-2 gap-2 text-[11px]">
-                    <div className="p-2 rounded-lg bg-danger/10 border-2 border-danger text-danger">
-                      <span className="text-[9px] uppercase font-bold block">🚨 AI Bounding Box: Amount</span>
-                      <span className="font-extrabold text-sm block">₹{slipSimulation.detectedAmount}</span>
-                      <span className="text-[10px] font-medium">Statutory Limit: ₹100</span>
+                  {/* Verification Results */}
+                  <div className="pt-1 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                    <div className={`p-3 rounded-xl border ${
+                      slipSimulation.detectedAmount > 100
+                        ? "bg-danger/5 border-danger/25 text-danger"
+                        : "bg-teal/5 border-teal/25 text-teal"
+                    }`}>
+                      <span className="text-[10px] uppercase font-bold block text-text-secondary">Extracted Amount</span>
+                      <span className="font-extrabold text-base block my-0.5">₹{slipSimulation.detectedAmount}</span>
+                      <span className="text-[11px] font-medium text-text-muted">
+                        Statutory Limit: ₹100 ({slipSimulation.detectedAmount > 100 ? `₹${slipSimulation.detectedAmount - 100} excess` : "Compliant"})
+                      </span>
                     </div>
 
-                    <div className="p-2 rounded-lg bg-danger/10 border-2 border-danger text-danger">
-                      <span className="text-[9px] uppercase font-bold block">🚫 Form 33 Computer Token</span>
-                      <span className="font-extrabold text-sm block">
-                        {slipSimulation.receiptStatus === "OFFICIAL_COMPUTER_RECEIPT" ? "VERIFIED (16-DIGIT)" : "NOT DETECTED"}
+                    <div className={`p-3 rounded-xl border ${
+                      slipSimulation.receiptStatus === "OFFICIAL_COMPUTER_RECEIPT"
+                        ? "bg-teal/5 border-teal/25 text-teal"
+                        : "bg-danger/5 border-danger/25 text-danger"
+                    }`}>
+                      <span className="text-[10px] uppercase font-bold block text-text-secondary">Form 33 Token Verification</span>
+                      <span className="font-extrabold text-base block my-0.5">
+                        {slipSimulation.receiptStatus === "OFFICIAL_COMPUTER_RECEIPT" ? "16-Digit Token Valid" : "Token Not Found"}
                       </span>
-                      <span className="text-[10px] font-medium">
-                        {slipSimulation.receiptStatus === "OFFICIAL_COMPUTER_RECEIPT" ? "Compliant eMitra Token" : "eMitra Rule Violation"}
+                      <span className="text-[11px] font-medium text-text-muted">
+                        {slipSimulation.receiptStatus === "OFFICIAL_COMPUTER_RECEIPT" ? "eMitra SLA Compliant" : "Mandatory computer receipt missing"}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-amber-200 flex items-center justify-between text-[10px] text-amber-800">
-                  <span>Stamp: Rajasthan eMitra Kiosk Audit</span>
-                  <span className="font-bold text-teal">Grounded via HAQ</span>
+                <div className="pt-3 border-t border-border-light flex items-center justify-between text-[11px] text-text-secondary">
+                  <span>Rajasthan eMitra Statutory Audit</span>
+                  <span className="font-semibold text-teal">DoIT&amp;C Order F1(23)/DoIT/Tech/11/Vol-V</span>
                 </div>
               </div>
             ) : (
               <div className="p-4 rounded-2xl border border-dashed border-border bg-page-bg/60 text-center text-xs text-text-muted">
-                <p className="font-semibold text-navy text-xs">Evidence Slip Inspector Ready</p>
+                <p className="font-semibold text-navy text-xs">Receipt Evidence Inspector Ready</p>
                 <p className="text-[11px] mt-1 text-text-secondary">
-                  Upload a photo of your receipt above, speak via microphone, or click a 1-click test scenario to inspect physical slip compliance and token validity.
+                  Upload a photo of your receipt slip, enter details manually, or use a test scenario to inspect statutory fee compliance.
                 </p>
               </div>
             )}
@@ -951,49 +970,6 @@ function PaymentCheckContent() {
                       ))}
                     </ul>
                   </div>
-                </div>
-
-                {/* Supabase Community Record Sync */}
-                <div className="bg-white rounded-2xl border border-border p-4 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-teal/10 text-teal flex items-center justify-center shrink-0">
-                      <Database className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <span className="text-xs font-bold text-navy block">
-                        Supabase Public Intelligence Sync
-                      </span>
-                      <span className="text-[11px] text-text-muted">
-                        Log this verified audit to help build open rate transparency for other citizens.
-                      </span>
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={handleSaveToCommunity}
-                    disabled={isSavingCase || caseSavedStatus === "saved"}
-                    className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-xs shrink-0 ${
-                      caseSavedStatus === "saved"
-                        ? "bg-teal text-white border border-teal"
-                        : "bg-navy hover:bg-navy-light text-white"
-                    }`}
-                  >
-                    {isSavingCase ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    ) : caseSavedStatus === "saved" ? (
-                      <CheckCircle2 className="w-3.5 h-3.5 text-white" />
-                    ) : (
-                      <Database className="w-3.5 h-3.5 text-teal" />
-                    )}
-                    <span>
-                      {isSavingCase
-                        ? "Saving..."
-                        : caseSavedStatus === "saved"
-                        ? "Saved to Community Database"
-                        : "Save to Supabase Database"}
-                    </span>
-                  </button>
                 </div>
 
                 {/* Step 3: Actionable Next Steps (3 Tabs) */}

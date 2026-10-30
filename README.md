@@ -71,7 +71,6 @@ Citizen Slip / Voice ──► AI Multimodal Vision OCR ──► Deterministic 
 | `/services/[serviceId]` | Comprehensive service details, checklists, turnaround times & appeals |
 | `/cases/new` | 3-step timeline verification workflow with document dropzone |
 | `/dashboard` | Citizen case tracking dashboard with live status filtering |
-| `/admin/rules` | Rule governance hub, audit checklist & calculation simulator |
 | `/sources` | Gazette citations, DoIT&C notifications, and official portal directory |
 | `/limitations` | Legal boundaries, data minimization & civic truthfulness disclosures |
 | `/privacy` | Zero-Aadhaar policy and privacy-first architecture |

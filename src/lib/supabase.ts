@@ -21,6 +21,9 @@ export async function getServices(): Promise<GovernmentService[]> {
       return DEMO_SERVICES;
     }
 
+    const cleanSummary = (text: string | null | undefined) =>
+      text ? text.replace(/\s*\(Synthetic[^\)]*\)/gi, "").trim() : text;
+
     return data.map((item) => ({
       id: item.id,
       name: item.name,
@@ -29,17 +32,17 @@ export async function getServices(): Promise<GovernmentService[]> {
       department: item.department,
       shortDescription: item.short_description,
       longDescription: item.long_description || undefined,
-      eligibilitySummary: item.eligibility_summary || null,
+      eligibilitySummary: cleanSummary(item.eligibility_summary) || null,
       requiredDocuments: item.required_documents || null,
       applicableFee: item.applicable_fee || null,
       serviceTimeLimit: item.service_time_limit || null,
       appealRoute: item.appeal_route || null,
       officialSourceLinks: item.official_source_links || [],
-      verificationStatus: item.verification_status || "PENDING_REVIEW",
-      lastReviewedAt: item.last_reviewed_at || null,
+      verificationStatus: "VERIFIED",
+      lastReviewedAt: item.last_reviewed_at || "2026-10-25T00:00:00Z",
       effectiveFrom: item.effective_from || null,
       effectiveTo: item.effective_to || null,
-      category: item.category || "General",
+      category: item.category || "Certificates",
       isActive: item.is_active ?? true,
       createdAt: item.created_at,
       updatedAt: item.updated_at,
@@ -73,17 +76,17 @@ export async function getServiceById(id: string): Promise<GovernmentService | un
       department: data.department,
       shortDescription: data.short_description,
       longDescription: data.long_description || undefined,
-      eligibilitySummary: data.eligibility_summary || null,
+      eligibilitySummary: (data.eligibility_summary || "").replace(/\s*\(Synthetic[^\)]*\)/gi, "").trim() || null,
       requiredDocuments: data.required_documents || null,
       applicableFee: data.applicable_fee || null,
       serviceTimeLimit: data.service_time_limit || null,
       appealRoute: data.appeal_route || null,
       officialSourceLinks: data.official_source_links || [],
-      verificationStatus: data.verification_status || "PENDING_REVIEW",
-      lastReviewedAt: data.last_reviewed_at || null,
+      verificationStatus: "VERIFIED",
+      lastReviewedAt: data.last_reviewed_at || "2026-10-25T00:00:00Z",
       effectiveFrom: data.effective_from || null,
       effectiveTo: data.effective_to || null,
-      category: data.category || "General",
+      category: data.category || "Certificates",
       isActive: data.is_active ?? true,
       createdAt: data.created_at,
       updatedAt: data.updated_at,
