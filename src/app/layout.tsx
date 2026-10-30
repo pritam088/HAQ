@@ -16,6 +16,11 @@ export const metadata: Metadata = {
     "eMitra",
     "civic technology",
   ],
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({

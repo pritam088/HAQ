@@ -54,7 +54,7 @@ export function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
+      className={`sticky top-0 z-[80] transition-all duration-300 ${
         scrolled
           ? "bg-white/90 backdrop-blur-xl shadow-sm border-b border-border/50"
           : "bg-white/95 backdrop-blur-sm border-b border-border"
@@ -162,15 +162,15 @@ export function Navbar() {
 
       {/* Mobile Menu Panel */}
       <div
-        className={`fixed inset-x-0 top-16 bg-white border-b border-border shadow-2xl z-50 md:hidden transition-all duration-300 ease-in-out overflow-y-auto max-h-[calc(100vh-4rem)] ${
+        className={`fixed inset-x-0 top-16 bottom-0 bg-white shadow-2xl z-50 md:hidden transition-all duration-300 ease-in-out overflow-y-auto flex flex-col justify-between ${
           mobileOpen
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 -translate-y-2 pointer-events-none"
         }`}
       >
-        <div className="px-4 py-4 space-y-1 divide-y divide-border-light">
+        <div className="p-4 space-y-3">
           {/* Hak Saathi AI Top Trigger */}
-          <div className="pb-2">
+          <div>
             <button
               type="button"
               onClick={openHaqSaathi}
@@ -187,9 +187,11 @@ export function Navbar() {
             </button>
           </div>
 
-          <div className="space-y-1 py-3">
+          <div className="space-y-1 divide-y divide-border-light/60">
             {navLinks.map((link) => {
-              const isActive = pathname === link.href;
+              const isActive =
+                pathname === link.href ||
+                (link.href !== "/" && pathname?.startsWith(link.href + "/"));
               return (
                 <Link
                   key={link.href}
@@ -213,17 +215,23 @@ export function Navbar() {
               );
             })}
           </div>
+        </div>
 
-          <div className="pt-4 pb-2">
-            <Link
-              href="/payments/check"
-              className="btn-press flex items-center justify-center gap-2 w-full px-4 py-3 text-sm font-bold text-white bg-gradient-to-r from-purple to-purple-dark hover:from-purple-dark hover:to-navy rounded-xl shadow-md active:scale-95 transition-all text-center"
-              onClick={() => setMobileOpen(false)}
-            >
-              <Shield className="w-4 h-4 text-gold" />
-              <span>Verify a Payment Now</span>
-              <ChevronRight className="w-4 h-4" />
-            </Link>
+        {/* Bottom Actions & Trust Footnote */}
+        <div className="p-4 border-t border-border-light bg-page-bg/50 space-y-3">
+          <Link
+            href="/payments/check"
+            className="btn-press flex items-center justify-center gap-2 w-full px-4 py-3 text-sm font-bold text-white bg-gradient-to-r from-purple to-purple-dark hover:from-purple-dark hover:to-navy rounded-xl shadow-md active:scale-95 transition-all text-center"
+            onClick={() => setMobileOpen(false)}
+          >
+            <Shield className="w-4 h-4 text-gold" />
+            <span>Verify a Payment Now</span>
+            <ChevronRight className="w-4 h-4" />
+          </Link>
+
+          <div className="text-[11px] text-text-muted flex items-center justify-between pt-1">
+            <span>DoIT&amp;C Grounded Civics</span>
+            <span className="font-semibold text-purple">Helpline: 181 (Toll-Free)</span>
           </div>
         </div>
       </div>

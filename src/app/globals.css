@@ -198,6 +198,18 @@ body {
   animation: pulseGlow 2s ease-in-out infinite;
 }
 
+/* ---- Hide Next.js Development Indicator "N" Logo ---- */
+[data-nextjs-toast],
+nextjs-portal,
+#nextjs-dev-tools,
+[data-nextjs-dev-tools-button],
+div[data-nextjs-toast-wrapper] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 .animate-gradient {
   background-size: 200% 200%;
   animation: gradientShift 4s ease infinite;
@@ -288,4 +300,16 @@ body {
   height: 100%;
   border-radius: 50%;
   animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* ---- Hide Next.js Development Indicator "N" Logo ---- */
+[data-nextjs-toast],
+nextjs-portal,
+#nextjs-dev-tools,
+[data-nextjs-dev-tools-button],
+div[data-nextjs-toast-wrapper] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }

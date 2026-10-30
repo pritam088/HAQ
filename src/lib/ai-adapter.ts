@@ -150,8 +150,9 @@ class GeminiProvider implements AIProvider {
         };
       }
 
+      const cleanText = text.replace(/^#{1,6}\s*/gm, "");
       return {
-        content: text,
+        content: cleanText,
         provider: this.name,
         model: this.model,
         tokensUsed: data?.usageMetadata?.totalTokenCount,
@@ -226,7 +227,8 @@ IMPORTANT RULES:
 3. State that this is informational assistance, not legal advice.
 4. Keep explanations concise, structured, and actionable.
 5. Use Hindi terms in parentheses where helpful for Indian citizens.
-6. Do NOT claim any legal violation has occurred based solely on a timeline difference.`;
+6. Do NOT claim any legal violation has occurred based solely on a timeline difference.
+7. Do NOT use markdown heading hashtags like '#', '##', or '###' in your response. Instead, write clear headings in bold like **हेडिंग** or on new lines.`;
 
   const userPrompt = `Please explain this rule-check result to a citizen in plain language:
 

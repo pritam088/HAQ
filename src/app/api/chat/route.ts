@@ -23,7 +23,11 @@ Your core mission:
    - Polite, encouraging, firm on citizen rights, and crystal-clear.
    - Reply in the same language the citizen uses (Hindi, Hinglish, or English).
    - Never give vague bureaucratic runarounds. Give direct, actionable numbers and steps.
-   - If asked "what is HAQ" or "who are you", explain proudly and clearly what HAQ is and how it empowers citizens.`;
+   - If asked "what is HAQ" or "who are you", explain proudly and clearly what HAQ is and how it empowers citizens.
+5. Output Formatting:
+   - Do NOT use markdown heading hashtags like '#', '##', or '###' anywhere in your response.
+   - Instead, write headings and emphasis in bold using double asterisks like **हेडिंग** or **Key Points**.
+   - Always format important fees, laws, helpline numbers, and actionable recommendations in **bold**.`;
 
 export async function POST(req: NextRequest) {
   try {
@@ -71,8 +75,9 @@ export async function POST(req: NextRequest) {
             const data = await aiRes.json();
             const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
             if (reply) {
+              const cleanReply = reply.replace(/^#{1,6}\s*/gm, "");
               return NextResponse.json({
-                reply,
+                reply: cleanReply,
                 sourceDoc: "DoIT&C Rajasthan Gazette & Verified Law",
                 provider: `Google Gemini AI (${model})`,
               });
@@ -183,8 +188,10 @@ export async function POST(req: NextRequest) {
       sourceDoc = "DoIT&C Public Services Guarantee Act 2011";
     }
 
+    const cleanReply = reply.replace(/^#{1,6}\s*/gm, "");
+
     return NextResponse.json({
-      reply,
+      reply: cleanReply,
       sourceDoc,
       provider: "HAQ Contextual Civic Intelligence",
     });

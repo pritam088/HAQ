@@ -29,6 +29,7 @@ import { getServiceById, getRulesForService, saveCitizenCase } from "@/lib/supab
 import { DEMO_SERVICES, DEMO_RULES } from "@/lib/demo-data";
 import { checkRule, validateDates, type RuleCheckInput } from "@/lib/rule-engine";
 import type { GovernmentService, OfficialRule, RuleCheckResult } from "@/lib/types";
+import { FormattedText } from "@/components/FormattedText";
 
 type Step = "details" | "confirm" | "results";
 
@@ -996,7 +997,7 @@ function ResultsView({
           </div>
         ) : aiExplanation ? (
           <div className="prose prose-sm max-w-none text-text-secondary bg-page-bg/50 p-4 rounded-xl border border-border/50">
-            <p className="whitespace-pre-wrap leading-relaxed">{aiExplanation}</p>
+            <FormattedText content={aiExplanation} boldClassName="font-bold text-navy" />
           </div>
         ) : (
           <p className="text-sm text-text-muted">

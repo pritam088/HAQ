@@ -13,6 +13,7 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
+import { FormattedText } from "./FormattedText";
 
 interface ChatMessage {
   id: string;
@@ -258,13 +259,16 @@ export function HaqSaathiChat() {
                 }`}
               >
                 <div
-                  className={`max-w-[85%] p-3 rounded-2xl shadow-2xs leading-relaxed whitespace-pre-wrap ${
+                  className={`max-w-[85%] p-3 rounded-2xl shadow-2xs leading-relaxed ${
                     m.sender === "user"
                       ? "bg-purple text-white rounded-br-none"
                       : "bg-white text-navy border border-border rounded-bl-none"
                   }`}
                 >
-                  {m.text}
+                  <FormattedText
+                    content={m.text}
+                    boldClassName={m.sender === "user" ? "font-bold text-white underline decoration-white/40" : "font-bold text-navy"}
+                  />
                   {m.sourceDoc && (
                     <div className="mt-2 pt-1.5 border-t border-border-light text-[10px] text-teal font-semibold flex items-center justify-between flex-wrap gap-1">
                       <div className="flex items-center gap-1">
