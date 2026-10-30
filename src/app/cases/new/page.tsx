@@ -387,11 +387,13 @@ function CaseFormContent() {
               <label className="block text-xs font-bold text-navy uppercase tracking-wider mb-2">
                 Selected Rajasthan eMitra Service:
               </label>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
                 {[
                   { id: "raj-caste-cert-001", name: "Caste Certificate", days: "15 Days" },
                   { id: "raj-income-cert-001", name: "Income Certificate", days: "10 Days" },
                   { id: "raj-domicile-cert-001", name: "Domicile Certificate", days: "15 Days" },
+                  { id: "raj-ration-card-001", name: "Ration Card", days: "30 Days" },
+                  { id: "raj-jamabandi-001", name: "Jamabandi Nakal", days: "Same Day" },
                 ].map((s) => (
                   <button
                     key={s.id}

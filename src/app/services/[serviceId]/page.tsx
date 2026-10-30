@@ -34,6 +34,8 @@ export function generateStaticParams() {
     { serviceId: "raj-caste-cert-001" },
     { serviceId: "raj-income-cert-001" },
     { serviceId: "raj-domicile-cert-001" },
+    { serviceId: "raj-ration-card-001" },
+    { serviceId: "raj-jamabandi-001" },
   ];
 }
 

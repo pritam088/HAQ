@@ -156,5 +156,31 @@ describe("HAQ Payment & Fee Verification Engine", () => {
       // Ensure caveat mentions that third-party expenses (notary/affidavit) may exist
       expect(result.caveats.some((c) => c.includes("notary"))).toBe(true);
     });
+
+    it("correctly evaluates Ration Card fee compliance (Max ₹100)", () => {
+      const input: PaymentCheckInput = {
+        serviceId: "raj-ration-card-001",
+        reportedAmount: 250,
+        receiptStatus: "HANDWRITTEN_SLIP",
+      };
+
+      const result = checkPayment(input);
+      expect(result.status).toBe("POSSIBLE_DISCREPANCY_REQUIRING_VERIFICATION");
+      expect(result.maxAuthorizedTotal).toBe(100);
+      expect(result.unexplainedDifference).toBe(150);
+    });
+
+    it("correctly evaluates Jamabandi Land Record fee compliance (Max ₹50)", () => {
+      const input: PaymentCheckInput = {
+        serviceId: "raj-jamabandi-001",
+        reportedAmount: 50,
+        receiptStatus: "OFFICIAL_COMPUTER_RECEIPT",
+      };
+
+      const result = checkPayment(input);
+      expect(result.status).toBe("MATCHES_VERIFIED_FEE");
+      expect(result.maxAuthorizedTotal).toBe(50);
+      expect(result.unexplainedDifference).toBe(0);
+    });
   });
 });

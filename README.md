@@ -29,30 +29,38 @@ Citizen Slip / Voice ──► AI Multimodal Vision OCR ──► Deterministic 
 ## 🚀 2. Cutting-Edge Features
 
 ### 📷 Multimodal AI Receipt Scanner (`/payments/check` + `/api/scan-receipt`)
-- **Visual Receipt OCR:** Upload handwritten slips or kiosk photos. Powered by **Gemini 2.0 Flash Vision** with zero-config smart heuristic fallback for **100% free unlimited usage**.
+- **Visual Receipt OCR:** Upload handwritten slips or kiosk photos. Powered by **Google Gemini 3.5 Flash Multimodal Vision** with zero-config smart heuristic fallback for **100% free unlimited usage**.
+- **Form 33 Token Verification:** Inspects receipts for mandatory 16-digit eMitra computer tokens and flags non-compliant handwritten vouchers.
 - **1-Click Demo Scenarios:** Instant pre-loaded test cases for judges:
   1. `🚨 ₹250 Handwritten Jati Slip` (Flags ₹150 overcharge + illegal receipt status)
   2. `🚨 ₹350 Income Tatkal Demand` (Flags fictitious urgency fee)
   3. `✅ ₹100 Form 33 eMitra Token` (Validates full gazette compliance)
 
-### 🎙️ AI Voice Input ("बोलकर बताएं")
+### 🎙️ AI Voice Input & Audio Readout ("बोलकर बताएं" और "सुनकर समझें")
 - Built for common and rural citizens who may struggle to type English forms.
 - Speak naturally in **Hindi or Hinglish**: *"मैंने सांगानेर ई-मित्र पर जाति प्रमाण पत्र बनवाया और उन्होंने 250 रुपये लिए बिना रसीद के"*
 - Automatically extracts service, amount, receipt status, and triggers the audit in 1 second.
+- **Hindi Audio Readout:** Audits are read aloud via browser speech synthesis in natural Hindi for complete accessibility.
+
+### 🤖 Hak Saathi (हक साथी) Conversational Civic AI
+- Embedded bilingual AI legal assistant powered by **Google Gemini 3.5 Flash**.
+- Accessible anytime via the top Navbar, mobile menu, and persistent bottom-right widget.
+- Answers citizen queries regarding eMitra fees, statutory rights, appeal channels, and home SSO routes with zero legal jargon.
 
 ### ⚖️ Deterministic Fee & Rule Engine (`src/lib/fee-engine.ts` & `rule-engine.ts`)
-- Grounded directly in **Rajasthan DoIT&C Rate Notification No. F1(23)/DoIT/Tech/11/Vol-V**.
-- Independent, mathematical certainty decoupled from LLM hallucinations:
-  - Statutory Application Fee: ₹40
-  - Kiosk Operator Charge: ₹50
-  - Security Paper Print: ₹10
-  - **Statutory Maximum Total: ₹100**
-- 22 automated Vitest tests verifying edge cases, working days, and penalty triggers.
+- Grounded directly in **Rajasthan DoIT&C Rate Notification No. F1(23)/DoIT/Tech/11/Vol-V** and the **Rajasthan Guaranteed Delivery of Public Services Act 2011**.
+- Supports 5 essential statewide public services:
+  1. **Caste Certificate (जाति प्रमाण पत्र)**: Statutory Limit: 15 Working Days | Max Kiosk Fee: ₹100
+  2. **Income Certificate (आय प्रमाण पत्र)**: Statutory Limit: 10 Working Days | Max Kiosk Fee: ₹100
+  3. **Domicile Certificate (मूल निवास)**: Statutory Limit: 15 Calendar Days | Max Kiosk Fee: ₹100
+  4. **Ration Card Services (खाद्य सुरक्षा / राशन कार्ड)**: Statutory Limit: 30 Calendar Days | Max Kiosk Fee: ₹100
+  5. **Land Records / Jamabandi Copy (भूलेख खसरा नकल)**: Statutory Delivery: Same Day | Max Kiosk Fee: ₹50
+- 24 automated Vitest tests verifying mathematical edge cases, working days, and penalty triggers.
 
-### ✍️ Non-Confrontational Neutral Representation Generator
+### ✍️ Formal Legal Representation & Grievance Generator
 - Generates 3 dispute-resolving, respectful action formats:
-  1. **Rajasthan Sampark (Toll-Free 181 / DeGS) Formal Grievance Draft**
-  2. **Polite Counter Script** to demand the mandatory Form 33 computer receipt.
+  1. **Printable Formal Legal Notice (Section 7 Rajasthan Act 2011)** for SDO/District Collector inquiry.
+  2. **Rajasthan Sampark (Toll-Free 181 / DeGS) Formal Grievance Draft**.
   3. **Direct Home Application Guide** via Rajasthan SSO to bypass kiosks completely.
 
 ### 🗄️ Supabase Cloud & Local Dual-Sync Architecture

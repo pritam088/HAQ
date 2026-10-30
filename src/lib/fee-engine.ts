@@ -72,6 +72,36 @@ export const VERIFIED_FEE_SCHEDULES: Record<string, ServiceFeeBreakdown> = {
     lastVerifiedAt: "2026-10-25T00:00:00Z",
     directApplicationUrl: "https://sso.rajasthan.gov.in/",
   },
+  "raj-ration-card-001": {
+    serviceId: "raj-ration-card-001",
+    statutoryFee: 50,
+    kioskServiceCharge: 50,
+    printingCharge: 0,
+    otherAuthorizedCharges: [],
+    maxAuthorizedTotal: 100,
+    currency: "INR",
+    isComputerReceiptMandatory: true,
+    officialSourceDoc:
+      "Food & Civil Supplies Dept Rajasthan & DoIT&C Rate Notification F1(23)/DoIT/Tech/11/Vol-V",
+    sourceUrl: "https://food.rajasthan.gov.in/",
+    lastVerifiedAt: "2026-10-25T00:00:00Z",
+    directApplicationUrl: "https://sso.rajasthan.gov.in/",
+  },
+  "raj-jamabandi-001": {
+    serviceId: "raj-jamabandi-001",
+    statutoryFee: 20,
+    kioskServiceCharge: 30,
+    printingCharge: 0,
+    otherAuthorizedCharges: [],
+    maxAuthorizedTotal: 50,
+    currency: "INR",
+    isComputerReceiptMandatory: true,
+    officialSourceDoc:
+      "Revenue Dept (Apna Khata Bhulekh) & DoIT&C eMitra Certified Copy Tariff Orders",
+    sourceUrl: "https://apnakhata.rajasthan.gov.in/",
+    lastVerifiedAt: "2026-10-25T00:00:00Z",
+    directApplicationUrl: "https://apnakhata.rajasthan.gov.in/",
+  },
 };
 
 /**
