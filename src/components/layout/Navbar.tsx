@@ -30,10 +30,21 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close mobile menu on route change
+  // Close mobile menu on route change & handle body scroll lock
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
 
   return (
     <header
@@ -120,46 +131,66 @@ export function Navbar() {
             )}
           </button>
         </div>
+      </nav>
 
-        {/* Mobile menu with slide animation */}
+      {/* Mobile Backdrop Overlay */}
+      {mobileOpen && (
         <div
-          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-            mobileOpen ? "max-h-80 pb-4 opacity-100" : "max-h-0 opacity-0"
-          }`}
-        >
-          <div className="border-t border-border-light mt-1 pt-3">
-            <div className="flex flex-col gap-1">
-              {navLinks.map((link) => {
-                const isActive = pathname === link.href;
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
-                      isActive
-                        ? "text-purple bg-purple/8"
-                        : "text-text-secondary hover:text-navy hover:bg-page-bg"
-                    }`}
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                );
-              })}
-              <div className="mt-2 pt-2 border-t border-border-light">
+          className="fixed inset-0 top-16 bg-navy/60 backdrop-blur-xs z-40 md:hidden animate-fade-in"
+          onClick={() => setMobileOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Mobile Menu Panel */}
+      <div
+        className={`fixed inset-x-0 top-16 bg-white border-b border-border shadow-2xl z-50 md:hidden transition-all duration-300 ease-in-out overflow-y-auto max-h-[calc(100vh-4rem)] ${
+          mobileOpen
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "opacity-0 -translate-y-2 pointer-events-none"
+        }`}
+      >
+        <div className="px-4 py-4 space-y-1 divide-y divide-border-light">
+          <div className="space-y-1 pb-3">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href;
+              return (
                 <Link
-                  href="/payments/check"
-                  className="btn-press inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-purple to-purple-dark rounded-xl transition-colors w-full justify-center shadow-sm"
+                  key={link.href}
+                  href={link.href}
+                  className={`flex items-center justify-between px-3.5 py-3 text-sm font-semibold rounded-xl transition-all ${
+                    isActive
+                      ? "text-purple bg-purple/10 font-bold"
+                      : "text-navy hover:text-purple hover:bg-page-bg"
+                  }`}
                   onClick={() => setMobileOpen(false)}
                 >
-                  <Shield className="w-4 h-4 text-gold" />
-                  Verify a Payment Now
+                  <span>{link.label}</span>
+                  {link.badge ? (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-teal text-white leading-tight">
+                      {link.badge}
+                    </span>
+                  ) : (
+                    <ChevronRight className="w-4 h-4 text-text-muted" />
+                  )}
                 </Link>
-              </div>
-            </div>
+              );
+            })}
+          </div>
+
+          <div className="pt-4 pb-2">
+            <Link
+              href="/payments/check"
+              className="btn-press flex items-center justify-center gap-2 w-full px-4 py-3 text-sm font-bold text-white bg-gradient-to-r from-purple to-purple-dark hover:from-purple-dark hover:to-navy rounded-xl shadow-md active:scale-95 transition-all text-center"
+              onClick={() => setMobileOpen(false)}
+            >
+              <Shield className="w-4 h-4 text-gold" />
+              <span>Verify a Payment Now</span>
+              <ChevronRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
-      </nav>
+      </div>
     </header>
   );
 }

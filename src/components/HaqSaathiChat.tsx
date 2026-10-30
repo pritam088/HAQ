@@ -195,25 +195,25 @@ export function HaqSaathiChat() {
   };
 
   return (
-    <div className="fixed bottom-5 right-5 z-50">
+    <div className="fixed bottom-4 right-4 sm:bottom-5 sm:right-5 z-35">
       {/* Floating Trigger Button */}
       {!isOpen && (
         <button
           type="button"
           onClick={() => setIsOpen(true)}
-          className="btn-press flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-purple to-navy text-white font-bold text-xs shadow-xl hover:shadow-2xl hover:scale-105 transition-all border border-white/20 active:scale-95"
+          className="btn-press flex items-center gap-2 px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-full bg-gradient-to-r from-purple to-navy text-white font-bold text-xs shadow-xl hover:shadow-2xl hover:scale-105 transition-all border border-white/20 active:scale-95"
         >
-          <div className="w-6 h-6 rounded-full bg-teal/20 flex items-center justify-center text-teal animate-pulse">
+          <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-teal/20 flex items-center justify-center text-teal animate-pulse">
             <Sparkles className="w-3.5 h-3.5" />
           </div>
-          <span>हक साथी (Ask HAQ AI)</span>
+          <span className="text-xs">हक साथी (Ask HAQ AI)</span>
           <span className="w-2 h-2 rounded-full bg-emerald-400" />
         </button>
       )}
 
       {/* Floating Chat Drawer */}
       {isOpen && (
-        <div className="bg-white rounded-3xl shadow-2xl border border-border w-[90vw] sm:w-96 flex flex-col h-[520px] max-h-[85vh] overflow-hidden animate-fade-in-up">
+        <div className="bg-white rounded-3xl shadow-2xl border border-border w-[calc(100vw-2rem)] sm:w-96 flex flex-col h-[520px] max-h-[85vh] overflow-hidden animate-fade-in-up">
           {/* Header */}
           <div className="bg-gradient-to-r from-navy via-navy to-purple text-white p-4 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
