@@ -115,37 +115,52 @@ Extract the following information in strict JSON format:
         }
         parts.push({ text: textQuery ? `${prompt}\n\nCitizen statement: "${textQuery}"` : prompt });
 
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
-        const aiRes = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts }],
-            generationConfig: {
-              temperature: 0.1,
-              responseMimeType: "application/json",
-            },
-          }),
-        });
+        const preferredModel = process.env.GEMINI_MODEL || "gemini-3.5-flash";
+        const candidateModels = [preferredModel, "gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite"];
+        const uniqueModels = Array.from(new Set(candidateModels));
 
-        if (aiRes.ok) {
-          const aiData = await aiRes.json();
-          const parsedText = aiData?.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (parsedText) {
-            const parsedJson = JSON.parse(parsedText);
-            return NextResponse.json<ScanReceiptResponse>({
-              success: true,
-              serviceId: parsedJson.serviceId || "raj-caste-cert-001",
-              serviceName: parsedJson.serviceName || "Caste Certificate",
-              detectedAmount: Number(parsedJson.detectedAmount) || 150,
-              receiptStatus: parsedJson.receiptStatus || "HANDWRITTEN_SLIP",
-              kioskIdOrLocation: parsedJson.kioskIdOrLocation || "Scanned eMitra Kiosk",
-              operatorExplanation: parsedJson.operatorExplanation || "Extracted from receipt OCR",
-              confidence: Number(parsedJson.confidence) || 0.92,
-              extractedText: parsedJson.extractedText || "OCR extracted text",
-              aiProvider: "Gemini 2.0 Flash Vision",
-              flags: parsedJson.flags || ["Scanned via Gemini Vision"],
+        for (const model of uniqueModels) {
+          try {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`;
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+            const aiRes = await fetch(url, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                contents: [{ parts }],
+                generationConfig: {
+                  temperature: 0.1,
+                  responseMimeType: "application/json",
+                },
+              }),
+              signal: controller.signal,
             });
+            clearTimeout(timeoutId);
+
+            if (aiRes.ok) {
+              const aiData = await aiRes.json();
+              const parsedText = aiData?.candidates?.[0]?.content?.parts?.[0]?.text;
+              if (parsedText) {
+                const parsedJson = JSON.parse(parsedText);
+                return NextResponse.json<ScanReceiptResponse>({
+                  success: true,
+                  serviceId: parsedJson.serviceId || "raj-caste-cert-001",
+                  serviceName: parsedJson.serviceName || "Caste Certificate",
+                  detectedAmount: Number(parsedJson.detectedAmount) || 150,
+                  receiptStatus: parsedJson.receiptStatus || "HANDWRITTEN_SLIP",
+                  kioskIdOrLocation: parsedJson.kioskIdOrLocation || "Scanned eMitra Kiosk",
+                  operatorExplanation: parsedJson.operatorExplanation || "Extracted from receipt OCR",
+                  confidence: Number(parsedJson.confidence) || 0.92,
+                  extractedText: parsedJson.extractedText || "OCR extracted text",
+                  aiProvider: `Google Gemini Vision AI (${model})`,
+                  flags: parsedJson.flags || ["Scanned via Gemini Vision"],
+                });
+              }
+            }
+          } catch (modelErr) {
+            console.warn(`Gemini vision model ${model} error:`, modelErr);
           }
         }
       } catch (geminiError) {

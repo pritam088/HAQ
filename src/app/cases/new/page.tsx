@@ -23,6 +23,7 @@ import {
   Check,
   Paperclip,
   Trash2,
+  Sparkles,
 } from "lucide-react";
 import { getServiceById, getRulesForService, saveCitizenCase } from "@/lib/supabase";
 import { checkRule, validateDates, type RuleCheckInput } from "@/lib/rule-engine";
@@ -41,6 +42,7 @@ function CaseFormContent() {
   const [processing, setProcessing] = useState(false);
   const [result, setResult] = useState<RuleCheckResult | null>(null);
   const [aiExplanation, setAiExplanation] = useState<string>("");
+  const [aiModel, setAiModel] = useState<string>("");
   const [aiLoading, setAiLoading] = useState(false);
 
   // Form state
@@ -235,6 +237,7 @@ function CaseFormContent() {
         if (res.ok) {
           const data = await res.json();
           setAiExplanation(data.explanation || "");
+          if (data.model) setAiModel(data.model);
         }
       } catch {
         // AI is supplementary; failure is acceptable
@@ -920,21 +923,24 @@ function ResultsView({
 
       {/* AI Explanation */}
       <div className="bg-card-bg rounded-2xl border border-border p-6 shadow-sm">
-        <h3 className="text-base font-semibold text-navy mb-3 flex items-center gap-2">
-          <Shield className="w-5 h-5 text-purple" />
-          AI Explanation
-          <span className="text-xs font-normal text-text-muted">
-            (supplementary)
+        <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <h3 className="text-base font-semibold text-navy flex items-center gap-2">
+            <Shield className="w-5 h-5 text-purple" />
+            AI Explanation & Legal Advisory
+          </h3>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-purple/10 text-purple border border-purple/20">
+            <Sparkles className="w-3.5 h-3.5 text-purple" />
+            {aiModel ? `Powered by Google Gemini (${aiModel})` : "Powered by Google Gemini 3.5 Flash"}
           </span>
-        </h3>
+        </div>
         {aiLoading ? (
-          <div className="flex items-center gap-2 text-sm text-text-muted">
-            <Loader2 className="w-4 h-4 animate-spin" />
-            Generating explanation...
+          <div className="flex items-center gap-2 text-sm text-text-muted py-3">
+            <Loader2 className="w-4 h-4 animate-spin text-purple" />
+            Generating legal analysis with Google Gemini...
           </div>
         ) : aiExplanation ? (
-          <div className="prose prose-sm max-w-none text-text-secondary">
-            <p className="whitespace-pre-wrap">{aiExplanation}</p>
+          <div className="prose prose-sm max-w-none text-text-secondary bg-page-bg/50 p-4 rounded-xl border border-border/50">
+            <p className="whitespace-pre-wrap leading-relaxed">{aiExplanation}</p>
           </div>
         ) : (
           <p className="text-sm text-text-muted">

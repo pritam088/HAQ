@@ -19,6 +19,7 @@ interface ChatMessage {
   sender: "user" | "bot";
   text: string;
   sourceDoc?: string;
+  provider?: string;
   timestamp: string;
 }
 
@@ -141,6 +142,7 @@ export function HaqSaathiChat() {
         sender: "bot",
         text: data.reply || "क्षमा करें, प्रतिक्रिया प्राप्त नहीं हो सकी। कृपया पुनः प्रयास करें।",
         sourceDoc: data.sourceDoc || "DoIT&C Rajasthan Gazette",
+        provider: data.provider || "Google Gemini AI",
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
 
@@ -258,9 +260,17 @@ export function HaqSaathiChat() {
                 >
                   {m.text}
                   {m.sourceDoc && (
-                    <div className="mt-2 pt-1.5 border-t border-border-light text-[10px] text-teal font-semibold flex items-center gap-1">
-                      <ShieldCheck className="w-3 h-3 text-teal" />
-                      <span>स्रोत: {m.sourceDoc}</span>
+                    <div className="mt-2 pt-1.5 border-t border-border-light text-[10px] text-teal font-semibold flex items-center justify-between flex-wrap gap-1">
+                      <div className="flex items-center gap-1">
+                        <ShieldCheck className="w-3 h-3 text-teal shrink-0" />
+                        <span>स्रोत: {m.sourceDoc}</span>
+                      </div>
+                      {m.provider && (
+                        <span className="inline-flex items-center gap-1 text-[9px] text-purple bg-purple/10 px-1.5 py-0.2 rounded font-medium">
+                          <Sparkles className="w-2.5 h-2.5 text-purple" />
+                          {m.provider}
+                        </span>
+                      )}
                     </div>
                   )}
                 </div>

@@ -34,42 +34,56 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Empty message" }, { status: 400 });
     }
 
-    // 1. If GEMINI_API_KEY is available, call real Gemini 2.0 Flash
+    // 1. If GEMINI_API_KEY is available, call real Google Gemini AI
     const apiKey = process.env.GEMINI_API_KEY;
     if (apiKey) {
-      try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-        const contents = [
-          ...(body.history || []),
-          { role: "user", parts: [{ text: userQuery }] },
-        ];
+      const preferredModel = process.env.GEMINI_MODEL || "gemini-3.5-flash";
+      const candidateModels = [preferredModel, "gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite"];
+      const uniqueModels = Array.from(new Set(candidateModels));
 
-        const aiRes = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-            contents,
-            generationConfig: {
-              temperature: 0.3,
-              maxOutputTokens: 1024,
-            },
-          }),
-        });
+      for (const model of uniqueModels) {
+        try {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+          const contents = [
+            ...(body.history || []),
+            { role: "user", parts: [{ text: userQuery }] },
+          ];
 
-        if (aiRes.ok) {
-          const data = await aiRes.json();
-          const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (reply) {
-            return NextResponse.json({
-              reply,
-              sourceDoc: "DoIT&C Rajasthan Gazette & Verified Law",
-              provider: "Gemini 2.0 Flash AI",
-            });
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+          const aiRes = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+              contents,
+              generationConfig: {
+                temperature: 0.35,
+                maxOutputTokens: 1024,
+              },
+            }),
+            signal: controller.signal,
+          });
+          clearTimeout(timeoutId);
+
+          if (aiRes.ok) {
+            const data = await aiRes.json();
+            const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (reply) {
+              return NextResponse.json({
+                reply,
+                sourceDoc: "DoIT&C Rajasthan Gazette & Verified Law",
+                provider: `Google Gemini AI (${model})`,
+              });
+            }
+          } else {
+            const errData = await aiRes.json().catch(() => null);
+            console.warn(`Gemini model ${model} returned status ${aiRes.status}:`, errData?.error?.message);
           }
+        } catch (err) {
+          console.warn(`Gemini chat model ${model} error:`, err);
         }
-      } catch (err) {
-        console.warn("Gemini chat API fallback:", err);
       }
     }
 

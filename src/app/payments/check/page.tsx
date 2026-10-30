@@ -515,10 +515,14 @@ function PaymentCheckContent() {
                     <Sparkles className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="text-xs font-bold text-navy flex items-center gap-1.5">
+                    <h3 className="text-xs font-bold text-navy flex items-center gap-1.5 flex-wrap">
                       <span>AI Multimodal &amp; Voice Inspector</span>
                       <span className="px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-purple/15 text-purple border border-purple/30">
                         2026 AI FOR YOU
+                      </span>
+                      <span className="px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-teal/15 text-teal border border-teal/30 flex items-center gap-1">
+                        <Sparkles className="w-2.5 h-2.5 text-teal" />
+                        Google Gemini 3.5 Flash
                       </span>
                     </h3>
                     <p className="text-[11px] text-text-muted">
