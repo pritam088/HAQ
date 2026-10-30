@@ -26,6 +26,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { getServiceById, getRulesForService, saveCitizenCase } from "@/lib/supabase";
+import { DEMO_SERVICES, DEMO_RULES } from "@/lib/demo-data";
 import { checkRule, validateDates, type RuleCheckInput } from "@/lib/rule-engine";
 import type { GovernmentService, OfficialRule, RuleCheckResult } from "@/lib/types";
 
@@ -34,16 +35,29 @@ type Step = "details" | "confirm" | "results";
 function CaseFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const serviceId = searchParams.get("serviceId") || "";
+  const paramServiceId = searchParams.get("serviceId");
+  const [serviceId, setServiceId] = useState<string>(
+    paramServiceId || "raj-caste-cert-001"
+  );
 
-  const [service, setService] = useState<GovernmentService | null>(null);
-  const [rules, setRules] = useState<OfficialRule[]>([]);
+  const [service, setService] = useState<GovernmentService | null>(
+    DEMO_SERVICES.find((s) => s.id === serviceId) || DEMO_SERVICES[0]
+  );
+  const [rules, setRules] = useState<OfficialRule[]>(
+    DEMO_RULES.filter((r) => r.serviceId === serviceId)
+  );
   const [step, setStep] = useState<Step>("details");
   const [processing, setProcessing] = useState(false);
   const [result, setResult] = useState<RuleCheckResult | null>(null);
   const [aiExplanation, setAiExplanation] = useState<string>("");
   const [aiModel, setAiModel] = useState<string>("");
   const [aiLoading, setAiLoading] = useState(false);
+
+  useEffect(() => {
+    if (paramServiceId && paramServiceId !== serviceId) {
+      setServiceId(paramServiceId);
+    }
+  }, [paramServiceId]);
 
   // Form state
   const [applicationDate, setApplicationDate] = useState("");
@@ -151,28 +165,6 @@ function CaseFormContent() {
       };
     }
   }, [serviceId]);
-
-  if (!serviceId) {
-    return (
-      <div className="min-h-screen bg-page-bg flex items-center justify-center">
-        <div className="text-center p-8">
-          <AlertTriangle className="w-12 h-12 text-gold-dark mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-navy mb-2">
-            No Service Selected
-          </h2>
-          <p className="text-text-secondary mb-4">
-            Please select a service from our catalog first.
-          </p>
-          <Link
-            href="/services"
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-purple text-white rounded-lg"
-          >
-            Browse Services
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   if (!service) {
     return (
@@ -386,9 +378,42 @@ function CaseFormContent() {
             <h2 className="text-lg font-semibold text-navy mb-1">
               Application Details
             </h2>
-            <p className="text-sm text-text-secondary mb-6">
+            <p className="text-sm text-text-secondary mb-5">
               Enter the dates from your application, or upload an eMitra receipt slip to autofill verified details.
             </p>
+
+            {/* Service Switcher Bar */}
+            <div className="mb-6 p-3.5 bg-page-bg rounded-xl border border-border">
+              <label className="block text-xs font-bold text-navy uppercase tracking-wider mb-2">
+                Selected Rajasthan eMitra Service:
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                {[
+                  { id: "raj-caste-cert-001", name: "Caste Certificate", days: "15 Days" },
+                  { id: "raj-income-cert-001", name: "Income Certificate", days: "10 Days" },
+                  { id: "raj-domicile-cert-001", name: "Domicile Certificate", days: "15 Days" },
+                ].map((s) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => {
+                      setServiceId(s.id);
+                      router.replace(`/cases/new?serviceId=${s.id}`);
+                    }}
+                    className={`px-3 py-2 rounded-lg text-left text-xs transition-all border ${
+                      serviceId === s.id
+                        ? "bg-purple text-white border-purple font-bold shadow-xs"
+                        : "bg-white text-navy border-border hover:bg-page-bg font-medium"
+                    }`}
+                  >
+                    <span className="block truncate">{s.name}</span>
+                    <span className={`text-[10px] block ${serviceId === s.id ? "text-white/80" : "text-text-muted"}`}>
+                      Statutory: {s.days}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
 
             {/* Document Upload & Extraction Box */}
             <div className="mb-6 p-4 rounded-2xl border border-dashed border-purple/40 bg-purple/5 space-y-3">

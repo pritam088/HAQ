@@ -170,65 +170,93 @@ export default function ServicesPage() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-6 pb-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredServices.map((service) => (
-            <Link
+            <div
               key={service.id}
-              href={`/services/${service.id}`}
-              className="group bg-card-bg rounded-2xl border border-border p-6 shadow-sm card-hover hover:border-purple/20"
+              className="bg-card-bg rounded-2xl border border-border p-6 shadow-sm hover:border-purple/30 transition-all flex flex-col justify-between"
               id={`service-card-${service.id}`}
             >
-              <div className="flex items-start justify-between gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple/10 to-teal/5 flex items-center justify-center shrink-0 group-hover:shadow-sm transition-shadow">
-                  <FileText className="w-5 h-5 text-purple" />
+              <div>
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <Link
+                    href={`/services/${service.id}`}
+                    className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple/10 to-teal/5 flex items-center justify-center shrink-0 hover:scale-105 transition-transform"
+                  >
+                    <FileText className="w-5 h-5 text-purple" />
+                  </Link>
+                  <VerificationBadge status={service.verificationStatus} />
                 </div>
-                <VerificationBadge status={service.verificationStatus} />
-              </div>
 
-              <h3 className="text-base font-semibold text-navy mb-1 group-hover:text-purple transition-colors duration-200">
-                {service.name}
-              </h3>
-              {service.nameHindi && (
-                <p className="text-xs text-text-muted mb-2">
-                  {service.nameHindi}
+                <Link
+                  href={`/services/${service.id}`}
+                  className="block text-base font-bold text-navy mb-1 hover:text-purple transition-colors"
+                >
+                  {service.name}
+                </Link>
+                {service.nameHindi && (
+                  <p className="text-xs text-text-muted mb-2 font-medium">
+                    {service.nameHindi}
+                  </p>
+                )}
+
+                <p className="text-sm text-text-secondary leading-relaxed mb-3 line-clamp-2">
+                  {service.shortDescription}
                 </p>
-              )}
 
-              <p className="text-sm text-text-secondary leading-relaxed mb-3 line-clamp-2">
-                {service.shortDescription}
-              </p>
+                {/* Verified Rates & Timelines Badges */}
+                <div className="flex items-center gap-2 flex-wrap mb-4">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-teal/10 text-teal border border-teal/20">
+                    <IndianRupee className="w-3 h-3" />
+                    Max: ₹100 (DoIT&amp;C)
+                  </span>
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-page-bg text-text-secondary border border-border">
+                    <Clock className="w-3 h-3 text-purple" />
+                    {service.serviceTimeLimit ? service.serviceTimeLimit.split("(")[0].trim() : "10-15 Days"}
+                  </span>
+                </div>
 
-              {/* Verified Rates & Timelines Badges */}
-              <div className="flex items-center gap-2 flex-wrap mb-4">
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-teal/10 text-teal border border-teal/20">
-                  <IndianRupee className="w-3 h-3" />
-                  Max: ₹100 (DoIT&amp;C)
-                </span>
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-page-bg text-text-secondary border border-border">
-                  <Clock className="w-3 h-3 text-purple" />
-                  {service.serviceTimeLimit ? service.serviceTimeLimit.split("(")[0].trim() : "10-15 Days"}
-                </span>
+                <div className="flex items-center gap-3 text-xs text-text-muted">
+                  <span className="flex items-center gap-1">
+                    <MapPin className="w-3 h-3" />
+                    {service.state}
+                  </span>
+                  <span className="flex items-center gap-1 truncate max-w-[180px]">
+                    <Building2 className="w-3 h-3" />
+                    {service.department.split("(")[0].trim()}
+                  </span>
+                </div>
               </div>
 
-              <div className="flex items-center gap-3 text-xs text-text-muted">
-                <span className="flex items-center gap-1">
-                  <MapPin className="w-3 h-3" />
-                  {service.state}
-                </span>
-                <span className="flex items-center gap-1 truncate max-w-[180px]">
-                  <Building2 className="w-3 h-3" />
-                  {service.department.split("(")[0].trim()}
-                </span>
-              </div>
+              <div>
+                {/* Direct Action Buttons */}
+                <div className="mt-5 pt-3 border-t border-border-light grid grid-cols-2 gap-2">
+                  <Link
+                    href={`/payments/check?serviceId=${service.id}`}
+                    className="btn-press flex items-center justify-center gap-1 px-2.5 py-2 text-xs font-bold text-white bg-gradient-to-r from-purple to-purple-dark hover:from-purple-dark hover:to-navy rounded-xl transition-all shadow-2xs text-center"
+                  >
+                    <IndianRupee className="w-3 h-3 text-gold" />
+                    <span>Verify Payment</span>
+                  </Link>
 
-              <div className="mt-4 pt-3 border-t border-border-light flex items-center justify-between">
-                <span className="text-xs text-text-muted">
-                  {service.category}
-                </span>
-                <span className="text-xs text-purple font-semibold flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                  Check Fee &amp; Process
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </span>
+                  <Link
+                    href={`/cases/new?serviceId=${service.id}`}
+                    className="btn-press flex items-center justify-center gap-1 px-2.5 py-2 text-xs font-bold text-navy bg-page-bg hover:bg-border-light border border-border rounded-xl transition-all text-center"
+                  >
+                    <Clock className="w-3 h-3 text-purple" />
+                    <span>Verify Timeline</span>
+                  </Link>
+                </div>
+
+                <div className="mt-2.5 text-center">
+                  <Link
+                    href={`/services/${service.id}`}
+                    className="text-[11px] text-text-muted hover:text-purple font-medium inline-flex items-center gap-1"
+                  >
+                    View Official Parameters &amp; Direct SSO Route
+                    <ChevronRight className="w-3 h-3" />
+                  </Link>
+                </div>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
 

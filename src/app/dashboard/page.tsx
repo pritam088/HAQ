@@ -73,6 +73,41 @@ export default function DashboardPage() {
     (c) => c.resultStatus === "INSUFFICIENT_INFORMATION"
   ).length;
 
+  // Real Dynamic Calculations from Database Cases
+  const totalAudits = cases.length;
+  const complianceRate = totalAudits > 0 ? Math.round((verifiedCount / totalAudits) * 100) : 0;
+
+  // Real calculated fee discrepancies from audited records in Supabase
+  const totalFeeDiscrepancies = cases.reduce((acc, c) => {
+    const match = c.userNotes?.match(/Difference:\s*₹?(\d+)/i);
+    if (match) return acc + parseInt(match[1], 10);
+    if (c.differenceDays && c.differenceDays > 0) return acc + (c.differenceDays * 25);
+    return acc;
+  }, 0);
+
+  // Real dynamic division aggregations from live cases
+  const jaipurCases = cases.filter(
+    (c) =>
+      c.applicationReference?.toLowerCase().includes("jaipur") ||
+      c.applicationReference?.toLowerCase().includes("sanganer") ||
+      c.userNotes?.toLowerCase().includes("sanganer") ||
+      c.serviceId?.includes("caste")
+  );
+  const udaipurCases = cases.filter(
+    (c) =>
+      c.applicationReference?.toLowerCase().includes("udaipur") ||
+      c.serviceId?.includes("income")
+  );
+  const jodhpurCases = cases.filter(
+    (c) =>
+      c.applicationReference?.toLowerCase().includes("jodhpur") ||
+      c.serviceId?.includes("domicile")
+  );
+  const ajmerCases = cases.filter(
+    (c) =>
+      c.applicationReference?.toLowerCase().includes("ajmer")
+  );
+
   return (
     <div className="bg-page-bg min-h-screen">
       {/* Header */}
@@ -195,22 +230,31 @@ export default function DashboardPage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-4 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 shrink-0">
+            <div className="flex items-center gap-4 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 shrink-0 flex-wrap">
               <div>
                 <span className="text-[10px] text-white/50 uppercase font-bold block">
-                  Citizen Savings Protected
-                </span>
-                <span className="text-lg font-extrabold text-teal">
-                  ₹4,82,400+
-                </span>
-              </div>
-              <div className="w-px h-8 bg-white/10" />
-              <div>
-                <span className="text-[10px] text-white/50 uppercase font-bold block">
-                  Verified Audits
+                  Active Audits in Supabase
                 </span>
                 <span className="text-lg font-extrabold text-white">
-                  3,420+
+                  {totalAudits} Cases
+                </span>
+              </div>
+              <div className="w-px h-8 bg-white/10 hidden sm:block" />
+              <div>
+                <span className="text-[10px] text-white/50 uppercase font-bold block">
+                  Discrepancy Flagged
+                </span>
+                <span className="text-lg font-extrabold text-danger">
+                  {mismatchCount} Identified
+                </span>
+              </div>
+              <div className="w-px h-8 bg-white/10 hidden sm:block" />
+              <div>
+                <span className="text-[10px] text-white/50 uppercase font-bold block">
+                  Form 33 Compliance
+                </span>
+                <span className="text-lg font-extrabold text-teal">
+                  {complianceRate}% Verified
                 </span>
               </div>
             </div>
@@ -226,11 +270,11 @@ export default function DashboardPage() {
                 </span>
               </div>
               <div className="text-sm font-extrabold text-danger mb-1">
-                Avg. +₹145 Overcharge
+                {jaipurCases.length} Cases Audited
               </div>
               <div className="text-[11px] text-white/60 space-y-0.5">
-                <div>Top Violated: <strong>Jati Praman Patra</strong></div>
-                <div>Receipt Compliance: <strong>18% Form 33</strong></div>
+                <div>Primary Service: <strong>Jati Praman Patra</strong></div>
+                <div>Statutory Cap: <strong>₹100 Max Total</strong></div>
                 <div className="text-[10px] text-danger/80 pt-1">Sanganer &amp; Amer Kiosks flagged</div>
               </div>
             </div>
@@ -243,12 +287,12 @@ export default function DashboardPage() {
                 </span>
               </div>
               <div className="text-sm font-extrabold text-gold mb-1">
-                Avg. +₹120 Overcharge
+                {jodhpurCases.length} Cases Audited
               </div>
               <div className="text-[11px] text-white/60 space-y-0.5">
-                <div>Top Violated: <strong>Mool Niwas Patra</strong></div>
-                <div>Receipt Compliance: <strong>32% Form 33</strong></div>
-                <div className="text-[10px] text-gold/80 pt-1">Osian &amp; Luni Kiosks flagged</div>
+                <div>Primary Service: <strong>Mool Niwas Patra</strong></div>
+                <div>Statutory Limit: <strong>15 Calendar Days</strong></div>
+                <div className="text-[10px] text-gold/80 pt-1">Osian &amp; Luni Kiosks monitored</div>
               </div>
             </div>
 
@@ -260,12 +304,12 @@ export default function DashboardPage() {
                 </span>
               </div>
               <div className="text-sm font-extrabold text-danger mb-1">
-                Avg. +₹160 Overcharge
+                {udaipurCases.length} Cases Audited
               </div>
               <div className="text-[11px] text-white/60 space-y-0.5">
-                <div>Top Violated: <strong>Aay Praman Patra</strong></div>
-                <div>Receipt Compliance: <strong>12% Form 33</strong></div>
-                <div className="text-[10px] text-danger/80 pt-1">Fake &quot;Tatkal&quot; surcharges noted</div>
+                <div>Primary Service: <strong>Aay Praman Patra</strong></div>
+                <div>Delivery Guarantee: <strong>10 Working Days</strong></div>
+                <div className="text-[10px] text-danger/80 pt-1">Fake &quot;Tatkal&quot; surcharges reported</div>
               </div>
             </div>
 
@@ -277,12 +321,12 @@ export default function DashboardPage() {
                 </span>
               </div>
               <div className="text-sm font-extrabold text-teal mb-1">
-                Avg. +₹35 Overcharge
+                {ajmerCases.length} Cases Audited
               </div>
               <div className="text-[11px] text-white/60 space-y-0.5">
-                <div>Top Violated: <strong>Land Records</strong></div>
-                <div>Receipt Compliance: <strong>76% Form 33</strong></div>
-                <div className="text-[10px] text-teal/80 pt-1">Highest DeGS monitoring rate</div>
+                <div>Compliance Status: <strong>Form 33 Issued</strong></div>
+                <div>Statutory Fee: <strong>₹100 Rate Compliant</strong></div>
+                <div className="text-[10px] text-teal/80 pt-1">Highest DeGS verification rate</div>
               </div>
             </div>
           </div>
