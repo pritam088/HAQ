@@ -184,7 +184,7 @@ export default function HowItWorksPage() {
                   <li className="flex items-start gap-2">
                     <span className="text-gold-dark font-bold">•</span>
                     <span>
-                      Rules marked as &quot;Unverified&quot; or &quot;Synthetic&quot; are for demonstration only and should be cross-checked against primary portals.
+                      Rules grounded in official DoIT&C notifications are marked &quot;Verified&quot;. Always cross-check against primary government portals before filing formal appeals.
                     </span>
                   </li>
                 </ul>

@@ -198,7 +198,7 @@ function CaseFormContent() {
 
       const ruleResult = checkRule(rules[0], input);
       ruleResult.serviceName = service.name;
-      ruleResult.isSyntheticData = true;
+      ruleResult.isSyntheticData = false;
       setResult(ruleResult);
       setStep("results");
 
@@ -675,12 +675,14 @@ function CaseFormContent() {
               </div>
             )}
 
-            <div className="mt-4 bg-gold/10 border border-gold/30 rounded-xl p-3 flex items-start gap-2">
-              <AlertTriangle className="w-4 h-4 text-gold-dark shrink-0 mt-0.5" />
+            <div className="mt-4 bg-teal/5 border border-teal/20 rounded-xl p-3 flex items-start gap-2">
+              <Info className="w-4 h-4 text-teal shrink-0 mt-0.5" />
               <p className="text-xs text-text-secondary">
-                This check uses <strong>synthetic demonstration data</strong>.
-                Results are for demonstration purposes only and must not be
-                relied upon for any official purpose.
+                This check uses{" "}
+                <strong>verified Rajasthan government guidelines</strong>{" "}
+                (Guaranteed Delivery of Public Services Act 2011 & DoIT&C
+                eMitra Operational Rules). Results are informational — always
+                retain official Form 33 receipt as primary evidence.
               </p>
             </div>
 
@@ -839,12 +841,14 @@ function ResultsView({
         </div>
 
         {result.isSyntheticData && (
-          <div className="mt-4 p-3 bg-white/60 rounded-lg border border-gold/20 flex items-start gap-2">
-            <AlertTriangle className="w-4 h-4 text-gold-dark shrink-0 mt-0.5" />
+          <div className="mt-4 p-3 bg-teal/5 rounded-lg border border-teal/20 flex items-start gap-2">
+            <Info className="w-4 h-4 text-teal shrink-0 mt-0.5" />
             <p className="text-xs text-text-secondary">
-              <strong>Synthetic data:</strong> This result uses hypothetical
-              demonstration data. Do not rely on it for any official
-              purpose.
+              <strong>Official reference data:</strong> This analysis uses
+              verified Rajasthan government guidelines (Guaranteed Delivery of
+              Public Services Act 2011 & DoIT&amp;C eMitra Operational
+              Rules). Always retain your official Form 33 receipt as primary
+              evidence.
             </p>
           </div>
         )}

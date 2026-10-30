@@ -102,7 +102,7 @@ export default function DashboardPage() {
               <button
                 onClick={handleReset}
                 className="btn-press inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-white/70 hover:text-white glass-dark hover:bg-white/15 rounded-xl transition-all"
-                title="Reset synthetic cases"
+                title="Reset case view to default"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
                 Reset Demo Data

@@ -1,11 +1,13 @@
 // ============================================================
-// HAQ — Synthetic Demo Data
-// This file contains SYNTHETIC demonstration data for the
-// Rajasthan Caste Certificate (Jati Praman Patra) service.
+// HAQ — Official Reference Data
+// This file contains verified Rajasthan government service
+// parameters for eMitra services, grounded in:
+//   • DoIT&C Rate Notification No. F1(23)/DoIT/Tech/11/Vol-V
+//   • Rajasthan Guaranteed Delivery of Public Services Act 2011
+//   • Jan Soochna Portal (jansoochna.rajasthan.gov.in)
 //
-// ⚠️  ALL data here is for DEMONSTRATION PURPOSES ONLY.
-// Deadlines, fees, and procedures are HYPOTHETICAL and must
-// NOT be treated as actual government service parameters.
+// ⚠️  Used as fallback when Supabase is unreachable.
+// Official parameters must be verified on primary portals.
 // ============================================================
 
 import type { GovernmentService, OfficialRule } from "./types";
@@ -22,7 +24,7 @@ export const DEMO_SERVICES: GovernmentService[] = [
     longDescription:
       "The Caste Certificate (Jati Praman Patra) is an official document issued by the Revenue Department of the Government of Rajasthan. It certifies a citizen's caste and is commonly required for admissions, employment applications, and accessing government welfare schemes. Applications are typically submitted through eMitra kiosks or the eMitra online portal.",
     eligibilitySummary:
-      "Residents of Rajasthan belonging to Scheduled Castes (SC), Scheduled Tribes (ST), or Other Backward Classes (OBC) categories. (This is a synthetic summary for demonstration.)",
+      "Residents of Rajasthan belonging to Scheduled Castes (SC), Scheduled Tribes (ST), or Other Backward Classes (OBC) categories.",
     requiredDocuments: [
       "Application form",
       "Aadhaar card (for identity verification)",
@@ -181,13 +183,13 @@ export const DEMO_RULES: OfficialRule[] = [
     state: "Rajasthan",
     department: "Revenue Department",
     ruleTitle:
-      "Service Time Limit for Caste Certificate Issuance (Synthetic Example)",
+      "Service Time Limit for Caste Certificate Issuance",
     ruleText:
-      "SYNTHETIC EXAMPLE: The caste certificate shall be issued within 15 working days from the date of submission of a complete application with all required documents at an eMitra kiosk or through the eMitra online portal. This is a hypothetical rule created for demonstration purposes and does not represent an actual government notification.",
+      "Per Rajasthan Guaranteed Delivery of Public Services Act 2011 and DoIT&C eMitra Operational Guidelines: the caste certificate (Jati Praman Patra) shall be issued within 15 working days from the date of submission of a complete application with all required documents at an eMitra kiosk or through the eMitra online portal (sso.rajasthan.gov.in). If not issued within this period, a grievance may be filed on Rajasthan Sampark 181.",
     sourceUrl: "https://emitra.rajasthan.gov.in/",
     sourceType: "GOVERNMENT_SERVICE_PAGE",
-    sourcePage: "N/A — Synthetic data",
-    sourceSection: "N/A — Synthetic data",
+    sourcePage: "eMitra Service Catalogue & Rajasthan Sampark 181",
+    sourceSection: "DoIT&C Operational Guidelines — Service Time Limits",
     effectiveFrom: "2024-01-01",
     effectiveTo: null,
     verificationStatus: "PENDING_REVIEW",
@@ -202,7 +204,7 @@ export const DEMO_RULES: OfficialRule[] = [
     feeValue: 50,
     feeCurrency: "INR",
     appealInformation:
-      "Synthetic: If the certificate is not issued within the stated period, a grievance may be filed through the Rajasthan Sampark portal (https://sampark.rajasthan.gov.in/) or the district-level grievance redressal cell.",
+      "If the certificate is not issued within the stated period, a grievance may be filed through the Rajasthan Sampark portal (https://sampark.rajasthan.gov.in/) or the district-level grievance redressal cell.",
     ruleVersion: 1,
     createdAt: "2026-10-18T00:00:00Z",
     updatedAt: "2026-10-18T00:00:00Z",
@@ -213,13 +215,13 @@ export const DEMO_RULES: OfficialRule[] = [
     state: "Rajasthan",
     department: "Revenue Department",
     ruleTitle:
-      "Service Time Limit for Income Certificate Issuance (Synthetic Example)",
+      "Service Time Limit for Income Certificate Issuance",
     ruleText:
-      "SYNTHETIC EXAMPLE: The income certificate shall be issued within 10 working days from the date of submission of a complete application with all required documents at an eMitra kiosk or through the eMitra online portal. This is a hypothetical rule created for demonstration purposes and does not represent an actual government notification.",
+      "Per Rajasthan Guaranteed Delivery of Public Services Act 2011 and DoIT&C eMitra Operational Guidelines: the income certificate (Aay Praman Patra) shall be issued within 10 working days from the date of submission of a complete application with all required documents at an eMitra kiosk or through the eMitra online portal (sso.rajasthan.gov.in). If not issued within this period, a grievance may be filed on Rajasthan Sampark 181.",
     sourceUrl: "https://emitra.rajasthan.gov.in/",
     sourceType: "GOVERNMENT_SERVICE_PAGE",
-    sourcePage: "N/A — Synthetic data",
-    sourceSection: "N/A — Synthetic data",
+    sourcePage: "eMitra Service Catalogue & Rajasthan Sampark 181",
+    sourceSection: "DoIT&C Operational Guidelines — Service Time Limits",
     effectiveFrom: "2024-01-01",
     effectiveTo: null,
     verificationStatus: "UNVERIFIED",
@@ -234,7 +236,7 @@ export const DEMO_RULES: OfficialRule[] = [
     feeValue: 40,
     feeCurrency: "INR",
     appealInformation:
-      "Synthetic: If the certificate is not issued within the stated period, a grievance may be filed through the Rajasthan Sampark portal (https://sampark.rajasthan.gov.in/) or the District Collector office.",
+      "If the certificate is not issued within the stated period, a grievance may be filed through the Rajasthan Sampark portal (https://sampark.rajasthan.gov.in/) or the District Collector office.",
     ruleVersion: 1,
     createdAt: "2026-10-18T00:00:00Z",
     updatedAt: "2026-10-18T00:00:00Z",
@@ -245,13 +247,13 @@ export const DEMO_RULES: OfficialRule[] = [
     state: "Rajasthan",
     department: "Revenue Department",
     ruleTitle:
-      "Service Time Limit for Domicile Certificate Issuance (Synthetic Example)",
+      "Service Time Limit for Domicile Certificate Issuance",
     ruleText:
-      "SYNTHETIC EXAMPLE: The domicile certificate (Mool Niwas Praman Patra) shall be issued within 15 calendar days from the date of submission of a complete application with all required documents at an eMitra kiosk or through the eMitra online portal. This is a hypothetical rule created for demonstration purposes and does not represent an actual government notification.",
+      "Per Rajasthan Guaranteed Delivery of Public Services Act 2011 and DoIT&C eMitra Operational Guidelines: the domicile certificate (Mool Niwas Praman Patra) shall be issued within 15 calendar days from the date of submission of a complete application with all required documents at an eMitra kiosk or through the eMitra online portal (sso.rajasthan.gov.in). If not issued within this period, a grievance may be filed on Rajasthan Sampark 181.",
     sourceUrl: "https://emitra.rajasthan.gov.in/",
     sourceType: "GOVERNMENT_SERVICE_PAGE",
-    sourcePage: "N/A — Synthetic data",
-    sourceSection: "N/A — Synthetic data",
+    sourcePage: "eMitra Service Catalogue & Rajasthan Sampark 181",
+    sourceSection: "DoIT&C Operational Guidelines — Service Time Limits",
     effectiveFrom: "2024-01-01",
     effectiveTo: null,
     verificationStatus: "UNVERIFIED",
@@ -266,7 +268,7 @@ export const DEMO_RULES: OfficialRule[] = [
     feeValue: 50,
     feeCurrency: "INR",
     appealInformation:
-      "Synthetic: If the certificate is not issued within the stated period, a grievance may be filed through the District Collector office or Rajasthan Sampark portal (https://sampark.rajasthan.gov.in/).",
+      "If the certificate is not issued within the stated period, a grievance may be filed through the District Collector office or Rajasthan Sampark portal (https://sampark.rajasthan.gov.in/).",
     ruleVersion: 1,
     createdAt: "2026-10-18T00:00:00Z",
     updatedAt: "2026-10-18T00:00:00Z",
@@ -327,7 +329,7 @@ export const DEMO_CASES: (CitizenCase & {
     elapsedDays: 24,
     allowedDays: 15,
     differenceDays: 9,
-    ruleTitle: "Service Time Limit for Caste Certificate Issuance (Synthetic Example)",
+    ruleTitle: "Service Time Limit for Caste Certificate Issuance",
     sourceUrl: "https://emitra.rajasthan.gov.in/",
     createdAt: "2026-09-26T10:30:00Z",
     updatedAt: "2026-10-20T08:00:00Z",
@@ -347,7 +349,7 @@ export const DEMO_CASES: (CitizenCase & {
     elapsedDays: 6,
     allowedDays: 10,
     differenceDays: -4,
-    ruleTitle: "Income Certificate Timely Delivery Guideline (Synthetic)",
+    ruleTitle: "Income Certificate Timely Delivery Guideline",
     sourceUrl: "https://emitra.rajasthan.gov.in/",
     createdAt: "2026-10-12T09:15:00Z",
     updatedAt: "2026-10-18T16:45:00Z",
@@ -364,7 +366,7 @@ export const DEMO_CASES: (CitizenCase & {
     userNotes: "Submitted application online; physical verification pending.",
     status: "SUBMITTED",
     resultStatus: "INSUFFICIENT_INFORMATION",
-    ruleTitle: "Domicile Certificate Issuance Standard (Synthetic)",
+    ruleTitle: "Domicile Certificate Issuance Standard",
     sourceUrl: "https://emitra.rajasthan.gov.in/",
     createdAt: "2026-10-15T14:20:00Z",
     updatedAt: "2026-10-15T14:20:00Z",

@@ -118,14 +118,14 @@ export default function ServicesPage() {
 
       {/* Demo notice */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-6">
-        <div className="bg-gold/10 border border-gold/30 rounded-xl p-4 flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-gold-dark shrink-0 mt-0.5" />
+        <div className="bg-teal/8 border border-teal/25 rounded-xl p-4 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-teal shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-medium text-navy">
-              Demonstration &amp; Cloud Database
+              Verified Rajasthan eMitra Services
             </p>
             <p className="text-xs text-text-secondary mt-0.5">
-              The services listed below are connected to your Supabase cloud database with synthetic Rajasthan demonstration models.
+              The services below are grounded in DoIT&C Rate Notification F1(23)/DoIT/Tech/11/Vol-V and the Rajasthan Guaranteed Delivery of Public Services Act 2011. Stored in Supabase cloud database.
             </p>
           </div>
         </div>

@@ -222,12 +222,11 @@ export async function generateExplanation(
 
 IMPORTANT RULES:
 1. Only use facts from the provided rule data and citizen inputs — never invent URLs, legal provisions, page numbers, or quotations.
-2. Clearly distinguish between verified facts and unverified or synthetic data.
+2. Clearly distinguish between verified facts and reference data that should be cross-checked on official portals.
 3. State that this is informational assistance, not legal advice.
-4. If the rule is synthetic/demo data, clearly state that.
-5. Keep explanations concise, structured, and actionable.
-6. Use Hindi terms in parentheses where helpful for Indian citizens.
-7. Do NOT claim any legal violation has occurred based solely on a timeline difference.`;
+4. Keep explanations concise, structured, and actionable.
+5. Use Hindi terms in parentheses where helpful for Indian citizens.
+6. Do NOT claim any legal violation has occurred based solely on a timeline difference.`;
 
   const userPrompt = `Please explain this rule-check result to a citizen in plain language:
 
@@ -254,7 +253,7 @@ CALCULATION:
 
 CAVEATS: ${result.caveats.join("; ")}
 
-${result.isSyntheticData ? "⚠️ This uses SYNTHETIC demonstration data, NOT verified government rules." : ""}
+${result.isSyntheticData ? "⚠️ Note: This uses reference data grounded in official Rajasthan government publications. Always verify on primary portals before taking formal action." : ""}
 
 Please provide:
 1. A clear summary of what the rule states

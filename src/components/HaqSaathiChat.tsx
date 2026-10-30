@@ -56,11 +56,14 @@ export function HaqSaathiChat() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [isListening, setIsListening] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [speakingId, setSpeakingId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: "msg-welcome",
       sender: "bot",
-      text: "नमस्ते! मैं हूँ आपका 'हक साथी' (HAQ Civic AI)। आप राजस्थान ई-मित्र, कानूनी सरकारी फीस, या अपने नागरिक अधिकारों के बारे में हिंदी या इंग्लिश में कुछ भी पूछ सकते हैं।",
+      text: "नमस्ते! मैं हूँ आपका 'हक साथी' (HAQ Civic AI)। आप राजस्थान ई-मित्र, कानूनी सरकारी फीस, अपने नागरिक अधिकारों, या HAQ के बारे में हिंदी या इंग्लिश में कुछ भी पूछ सकते हैं।",
+      sourceDoc: "HAQ Civic Intelligence & Rajasthan Gazette",
       timestamp: "Just now",
     },
   ]);
@@ -70,11 +73,33 @@ export function HaqSaathiChat() {
     if (isOpen) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages, isOpen]);
+  }, [messages, isOpen, isLoading]);
 
-  const handleSend = (textToSend?: string) => {
-    const query = textToSend || input;
-    if (!query.trim()) return;
+  const speakText = (id: string, text: string) => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+      alert("Text-to-speech is not supported on this browser.");
+      return;
+    }
+    if (speakingId === id) {
+      window.speechSynthesis.cancel();
+      setSpeakingId(null);
+      return;
+    }
+    window.speechSynthesis.cancel();
+    // Clean markdown bold/bullet stars for speech
+    const cleanText = text.replace(/[*#_`]/g, "").replace(/•/g, ", ");
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = "hi-IN";
+    utterance.rate = 1.0;
+    utterance.onend = () => setSpeakingId(null);
+    utterance.onerror = () => setSpeakingId(null);
+    setSpeakingId(id);
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const handleSend = async (textToSend?: string) => {
+    const query = (textToSend || input).trim();
+    if (!query || isLoading) return;
 
     const userMsg: ChatMessage = {
       id: `user-${Date.now()}`,
@@ -85,45 +110,55 @@ export function HaqSaathiChat() {
 
     setMessages((prev) => [...prev, userMsg]);
     if (!textToSend) setInput("");
+    setIsLoading(true);
 
-    // Simulate instant AI lookup with grounded responses
-    setTimeout(() => {
-      let botResponse = "";
-      let sourceDoc = "Rajasthan DoIT&C Public Gazette";
+    try {
+      // Build conversation history for context
+      const history = messages
+        .filter((m) => m.id !== "msg-welcome")
+        .slice(-6)
+        .map((m) => ({
+          role: m.sender === "user" ? ("user" as const) : ("model" as const),
+          parts: [{ text: m.text }],
+        }));
 
-      const matchedFaq = Object.keys(PRESET_ANSWERS).find(
-        (faq) => query.includes(faq) || faq.includes(query)
-      );
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: query,
+          history,
+        }),
+      });
 
-      if (matchedFaq) {
-        botResponse = PRESET_ANSWERS[matchedFaq].answer;
-        sourceDoc = PRESET_ANSWERS[matchedFaq].source;
-      } else {
-        const lower = query.toLowerCase();
-        if (lower.includes("fees") || lower.includes("फीस") || lower.includes("charge") || lower.includes("rupaye")) {
-          botResponse =
-            "राजस्थान ई-मित्र पर प्रमाण पत्रों (जाति, आय, मूल निवास) का कुल अधिकतम अधिकृत शुल्क ₹100 तय है। कियोस्क संचालक इससे ज्यादा फीस या 'अर्जेंट/तत्काल चार्ज' के नाम पर पैसे नहीं मांग सकते।";
-          sourceDoc = "DoIT&C Rate Notification F1(23)";
-        } else if (lower.includes("complaint") || lower.includes("शिकायत") || lower.includes("181")) {
-          botResponse =
-            "यदि किसी कियोस्क ने अवैध पैसे लिए हैं या रसीद नहीं दी है, तो टोल-फ्री नंबर 181 पर कॉल करें या sampark.rajasthan.gov.in पर ग्रीवेंस दर्ज कराएं।";
-          sourceDoc = "Rajasthan Sampark 181";
-        } else {
-          botResponse = `आपके प्रश्न "${query}" के संदर्भ में: राजस्थान लोक सेवा गारंटी अधिनियम के तहत सभी सेवाएं निर्धारित समय सीमा (10-15 कार्य दिवस) और निर्धारित शुल्क (अधिकतम ₹100) में प्रदान की जानी अनिवार्य हैं। बिना Form 33 रसीद के पैसे देना अस्वीकार्य है।`;
-          sourceDoc = "Public Services Guarantee Act 2011";
-        }
+      if (!res.ok) {
+        throw new Error(`Chat API error: ${res.status}`);
       }
 
+      const data = await res.json();
       const botMsg: ChatMessage = {
         id: `bot-${Date.now()}`,
         sender: "bot",
-        text: botResponse,
-        sourceDoc,
+        text: data.reply || "क्षमा करें, प्रतिक्रिया प्राप्त नहीं हो सकी। कृपया पुनः प्रयास करें।",
+        sourceDoc: data.sourceDoc || "DoIT&C Rajasthan Gazette",
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
 
       setMessages((prev) => [...prev, botMsg]);
-    }, 400);
+    } catch (err) {
+      console.error("Chat error:", err);
+      // Graceful local fallback
+      const botMsg: ChatMessage = {
+        id: `bot-${Date.now()}`,
+        sender: "bot",
+        text: `नमस्ते! आपके प्रश्न "${query}" के संबंध में: राजस्थान लोक सेवा गारंटी अधिनियम एवं DoIT&C अधिसूचना F1(23)/DoIT/Tech/11/Vol-V के अनुसार सभी प्रमुख प्रमाण पत्रों (जाति, आय, मूल निवास) का कुल अधिकृत शुल्क अधिकतम ₹100 है। कियोस्क द्वारा इससे अधिक शुल्क मांगना अथवा Form 33 कंप्यूटर रसीद न देना दंडनीय अपराध है। आप 181 पर शिकायत दर्ज करा सकते हैं।`,
+        sourceDoc: "DoIT&C Rate Notification F1(23)",
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      };
+      setMessages((prev) => [...prev, botMsg]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleVoice = () => {
@@ -229,11 +264,40 @@ export function HaqSaathiChat() {
                     </div>
                   )}
                 </div>
-                <span className="text-[9px] text-text-muted mt-0.5 px-1">
-                  {m.timestamp}
-                </span>
+                <div className="flex items-center gap-2 mt-0.5 px-1">
+                  <span className="text-[9px] text-text-muted">{m.timestamp}</span>
+                  {m.sender === "bot" && (
+                    <button
+                      type="button"
+                      onClick={() => speakText(m.id, m.text)}
+                      className="text-text-muted hover:text-purple transition-colors p-0.5"
+                      title={speakingId === m.id ? "बंद करें (Stop)" : "सुनें (Listen Hindi Audio)"}
+                    >
+                      {speakingId === m.id ? (
+                        <VolumeX className="w-3 h-3 text-danger animate-pulse" />
+                      ) : (
+                        <Volume2 className="w-3 h-3" />
+                      )}
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
+
+            {isLoading && (
+              <div className="flex flex-col items-start animate-fade-in">
+                <div className="bg-white text-navy border border-border rounded-2xl rounded-bl-none p-3 shadow-2xs flex items-center gap-2">
+                  <div className="flex gap-1 items-center">
+                    <span className="w-1.5 h-1.5 rounded-full bg-purple animate-bounce" style={{ animationDelay: "0ms" }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-purple animate-bounce" style={{ animationDelay: "150ms" }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-purple animate-bounce" style={{ animationDelay: "300ms" }} />
+                  </div>
+                  <span className="text-[10px] text-text-secondary font-medium">
+                    हक साथी सोच रहा है (Analyzing Rules)...
+                  </span>
+                </div>
+              </div>
+            )}
             <div ref={messagesEndRef} />
           </div>
 
@@ -269,18 +333,19 @@ export function HaqSaathiChat() {
             <input
               type="text"
               value={input}
+              disabled={isLoading}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") handleSend();
+                if (e.key === "Enter" && !isLoading) handleSend();
               }}
-              placeholder="हक साथी से पूछें... (उदा. जाति प्रमाण पत्र फीस)"
-              className="flex-1 px-3 py-2 text-xs rounded-xl border border-border bg-page-bg text-navy focus:outline-none focus:ring-2 focus:ring-purple/30 font-medium"
+              placeholder={isLoading ? "हक साथी उत्तर तैयार कर रहा है..." : "हक साथी से पूछें... (उदा. what is HAQ, जाति प्रमाण पत्र फीस)"}
+              className="flex-1 px-3 py-2 text-xs rounded-xl border border-border bg-page-bg text-navy focus:outline-none focus:ring-2 focus:ring-purple/30 font-medium disabled:opacity-60"
             />
 
             <button
               type="button"
               onClick={() => handleSend()}
-              disabled={!input.trim()}
+              disabled={!input.trim() || isLoading}
               className="p-2 rounded-xl bg-purple hover:bg-purple-dark text-white disabled:opacity-40 transition-colors shadow-2xs"
             >
               <Send className="w-4 h-4" />

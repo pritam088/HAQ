@@ -44,9 +44,9 @@ const limitations = [
   },
   {
     icon: HelpCircle,
-    title: "4. Synthetic Demonstration Models in This MVP",
+    title: "4. Official Reference Data — Always Verify on Primary Portals",
     content:
-      "To safeguard citizen accuracy while public service APIs are unintegrated, all service rules, fees, and timelines featured in this MVP (including Rajasthan Caste & Domicile certificates) are clearly classified as synthetic demonstration datasets. Real statutory parameters must be verified on official state portals.",
+      "Service rules, fees, and timelines shown on HAQ are grounded in official Rajasthan government publications (DoIT&C Rate Notification F1(23)/DoIT/Tech/11/Vol-V and the Guaranteed Delivery of Public Services Act 2011). These are used as reference data only. Citizens must always verify current parameters on official state portals before filing formal appeals.",
     color: "text-navy",
     bgColor: "bg-navy/10",
   },

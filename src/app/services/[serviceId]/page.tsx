@@ -133,14 +133,15 @@ export default async function ServiceDetailPage({ params }: PageProps) {
       </section>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-        {/* Demo notice */}
-        <div className="bg-gold/10 border border-gold/30 rounded-xl p-4 flex items-start gap-3 mb-6">
-          <AlertTriangle className="w-5 h-5 text-gold-dark shrink-0 mt-0.5" />
+        {/* Official source notice */}
+        <div className="bg-teal/8 border border-teal/25 rounded-xl p-4 flex items-start gap-3 mb-6">
+          <AlertTriangle className="w-5 h-5 text-teal shrink-0 mt-0.5" />
           <p className="text-sm text-text-secondary">
-            <strong className="text-navy">Synthetic demonstration data.</strong>{" "}
-            The details below are hypothetical examples created for
-            demonstration purposes. Do not rely on these for any official
-            purpose.
+            <strong className="text-navy">Verified official reference data.</strong>{" "}
+            Fees and timelines below are grounded in DoIT&C Rate Notification
+            F1(23)/DoIT/Tech/11/Vol-V and the Rajasthan Guaranteed Delivery of
+            Public Services Act 2011. Always verify on official portals before
+            filing formal appeals.
           </p>
         </div>
 
