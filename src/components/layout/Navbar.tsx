@@ -68,21 +68,14 @@ export function Navbar() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2.5 group"
-            aria-label="HAQ Home"
+            className="flex items-center group py-0.5"
+            aria-label="HAQ — आपका अधिकार"
           >
-            <div className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-navy text-white font-black text-sm tracking-tight overflow-hidden group-hover:shadow-lg group-hover:shadow-purple/15 transition-shadow duration-300">
-              <span className="relative z-10">HAQ</span>
-              <div className="absolute inset-0 bg-gradient-to-br from-purple/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </div>
-            <div className="flex flex-col leading-none">
-              <span className="text-navy font-extrabold text-lg tracking-tight">
-                HAQ
-              </span>
-              <span className="text-[10px] text-text-secondary font-medium -mt-0.5">
-                आपका अधिकार
-              </span>
-            </div>
+            <img
+              src="/haq-logo-light.png"
+              alt="HAQ — आपका अधिकार"
+              className="h-9 sm:h-10 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+            />
           </Link>
 
           {/* Desktop nav */}

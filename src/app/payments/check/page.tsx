@@ -1185,6 +1185,13 @@ function PaymentCheckContent() {
             {/* Printable Content */}
             <div className="py-6 space-y-4 text-xs font-serif text-slate-900 leading-relaxed border-b border-border" id="printable-notice">
               <div className="text-center pb-2 border-b border-slate-300">
+                <div className="flex justify-center mb-2">
+                  <img
+                    src="/haq-logo-light.png"
+                    alt="HAQ — आपका अधिकार"
+                    className="h-8 w-auto object-contain"
+                  />
+                </div>
                 <span className="font-bold text-sm uppercase block tracking-wider">
                   FORMAL NOTICE OF STATUTORY FEE SCHEDULE DISCREPANCY
                 </span>

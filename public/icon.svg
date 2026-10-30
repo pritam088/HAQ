@@ -1,12 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <defs>
-    <linearGradient id="haqGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6D3FD6"/>
-      <stop offset="100%" stop-color="#0F0F3D"/>
-    </linearGradient>
-  </defs>
-  <rect width="32" height="32" rx="7" fill="url(#haqGrad)"/>
-  <text x="16" y="20.5" text-anchor="middle" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="10.5" letter-spacing="-0.3">HAQ</text>
-  <circle cx="26" cy="6" r="3.2" fill="#12B886"/>
-  <circle cx="26" cy="6" r="1.8" fill="#FFFFFF" opacity="0.8"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <rect width="100" height="100" rx="22" fill="#010825"/>
+  <!-- Q ring -->
+  <circle cx="48" cy="46" r="28" fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round"/>
+  <!-- Q tail -->
+  <path d="M 62 60 L 76 76" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round"/>
+  <!-- Teal Checkmark inside Q -->
+  <path d="M 37 46 L 45 54 L 60 38" fill="none" stroke="#34B69E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

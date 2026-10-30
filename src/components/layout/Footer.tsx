@@ -17,19 +17,13 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="md:col-span-1">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-purple to-purple-dark text-white font-black text-xs shadow-sm">
-                HAQ
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="text-white font-extrabold text-base">
-                  HAQ
-                </span>
-                <span className="text-[10px] text-white/55 font-medium">
-                  आपका अधिकार
-                </span>
-              </div>
-            </div>
+            <Link href="/" className="inline-block mb-3 group" aria-label="HAQ Home">
+              <img
+                src="/haq-logo-transparent.png"
+                alt="HAQ — आपका अधिकार"
+                className="h-10 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+              />
+            </Link>
             <p className="text-sm text-white/55 leading-relaxed">
               Citizen-service verification assistant.
               <br />
