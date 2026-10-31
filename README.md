@@ -94,7 +94,7 @@ Citizen Slip / Voice ──► AI Multimodal Vision OCR ──► Deterministic 
 
 ### 2. Install & Run Locally
 ```bash
-git clone <repo-url>
+git clone https://github.com/pritam088/HAQ.git
 cd HAQ
 npm install
 npm run dev
@@ -105,7 +105,7 @@ Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 ```bash
 npm test
 ```
-*Expected: 22 tests passed across `fee-engine.test.ts` and `rule-engine.test.ts`.*
+*Expected: 24 tests passed across `fee-engine.test.ts` and `rule-engine.test.ts`.*
 
 ### 4. Build for Production
 ```bash
