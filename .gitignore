@@ -43,3 +43,5 @@ next-env.d.ts
 # presentation & local scripts
 *.pptx
 generate_ppt.py
+
+.vercel
